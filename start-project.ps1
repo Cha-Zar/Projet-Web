@@ -3,6 +3,8 @@ param(
     [string]$DbUser = $(if ($env:DB_USERNAME) { $env:DB_USERNAME } else { "root" }),
     [Alias("MysqlPassword")]
     [string]$DbPassword = $(if ($env:DB_PASSWORD) { $env:DB_PASSWORD } else { "" }),
+    [Alias("Port")]
+    [string]$ServerPort = $(if ($env:SERVER_PORT) { $env:SERVER_PORT } else { "8080" }),
     [string]$MailUsername = "",
     [string]$MailPassword = "",
     [string]$MailFrom = "",
@@ -45,7 +47,7 @@ $mysqlBin = "C:\tools\mysql\current\bin"
 $defaultDbUrl = "jdbc:mysql://localhost:3306/mondelys_db?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Africa/Tunis"
 $envDbUrl = if ($env:DB_URL) { $env:DB_URL.Trim() } else { "" }
 $dbUrl = $defaultDbUrl
-$serverPort = if ($env:SERVER_PORT) { $env:SERVER_PORT } else { "8080" }
+$serverPort = $ServerPort
 
 if ($envDbUrl) {
     if ($envDbUrl -like "jdbc:mysql:*") {
