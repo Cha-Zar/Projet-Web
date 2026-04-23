@@ -1,6 +1,8 @@
 param(
-    [string]$DbUser = "root",
-    [string]$DbPassword = "",
+    [Alias("DbUsername", "MysqlUser", "Username")]
+    [string]$DbUser = $(if ($env:DB_USERNAME) { $env:DB_USERNAME } else { "root" }),
+    [Alias("MysqlPassword")]
+    [string]$DbPassword = $(if ($env:DB_PASSWORD) { $env:DB_PASSWORD } else { "" }),
     [string]$MailUsername = "",
     [string]$MailPassword = "",
     [string]$MailFrom = "",
