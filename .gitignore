@@ -1,0 +1,5 @@
+.env
+backend/mondelys_db.mv.db
+backend/mondelys_db.trace.db
+backend/*.mv.db
+backend/*.trace.db

@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Réservation – Mondélys</title>
+  <link rel="stylesheet" href="style.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Lora:ital,wght@0,400;0,500;1,400&family=Raleway:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+
+  <style>
+    /* ─── CSS RESTENT EN PLACE (inchangés) ─── */
+
+    #navbar {
+      transition: background 0.4s ease, box-shadow 0.4s ease, padding 0.3s ease;
+    }
+    #navbar.scrolled {
+      box-shadow: 0 4px 32px rgba(0,0,0,0.18);
+    }
+
+    .nav-links a {
+      position: relative;
+      transition: color 0.25s ease;
+    }
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      left: 0; bottom: -3px;
+      width: 0; height: 1.5px;
+      background: currentColor;
+      transition: width 0.3s cubic-bezier(.4,0,.2,1);
+    }
+    .nav-links a:hover::after,
+    .nav-links a.active::after { width: 100%; }
+
+    .nav-cta {
+      transition: transform 0.22s ease, box-shadow 0.22s ease, background 0.22s ease;
+    }
+    .nav-cta:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 24px rgba(0,0,0,0.22);
+    }
+
+    .page-header-content {
+      animation: headerReveal 0.9s cubic-bezier(.22,1,.36,1) 0.2s both;
+    }
+    @keyframes headerReveal {
+      from { opacity: 0; transform: translateY(32px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ─── SCROLL REVEAL ─── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(40px);
+      transition: opacity 0.75s cubic-bezier(0.22, 1, 0.36, 1), transform 0.75s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+    .reveal-left {
+      opacity: 0;
+      transform: translateX(-40px);
+      transition: opacity 0.8s cubic-bezier(0.22, 1, 0.36, 1), transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .reveal-left.visible { opacity: 1; transform: translateX(0); }
+    .reveal-right {
+      opacity: 0;
+      transform: translateX(40px);
+      transition: opacity 0.8s cubic-bezier(0.22, 1, 0.36, 1), transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .reveal-right.visible { opacity: 1; transform: translateX(0); }
+
+    /* ─── RES-DETAIL HOVER CARD ─── */
+    .res-detail {
+      position: relative;
+      transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+                  box-shadow 0.35s ease,
+                  background 0.3s ease;
+      cursor: default;
+      overflow: hidden;
+    }
+    .res-detail::before {
+      content: '';
+      position: absolute;
+      left: 0; top: 0;
+      width: 3px;
+      height: 0;
+      background: var(--gold, #c9a84c);
+      transition: height 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .res-detail:hover {
+      transform: translateX(6px);
+      box-shadow: -6px 0 24px rgba(201,168,76,0.12);
+      background: rgba(201,168,76,0.04);
+    }
+    .res-detail:hover::before { height: 100%; }
+    .res-detail i {
+      transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), color 0.3s ease;
+    }
+    .res-detail:hover i {
+      transform: scale(1.25) rotate(-5deg);
+      color: var(--gold, #c9a84c) !important;
+    }
+
+    /* ─── FORM FIELD FOCUS EFFECTS ─── */
+    .form-group { position: relative; }
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.25s ease;
+    }
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 20px rgba(201,168,76,0.15), 0 0 0 2px rgba(201,168,76,0.2);
+      outline: none;
+    }
+    .form-group label { transition: color 0.25s ease; }
+    .form-group:focus-within label { color: var(--gold, #c9a84c); }
+
+    /* ─── STAGGER REVEAL FOR FORM ROWS ─── */
+    .form-row:nth-child(1) { transition-delay: 0.05s; }
+    .form-row:nth-child(2) { transition-delay: 0.12s; }
+    .form-row:nth-child(3) { transition-delay: 0.19s; }
+    .form-row:nth-child(4) { transition-delay: 0.26s; }
+
+    /* ─── SUBMIT BUTTON ANIMATION ─── */
+    .btn-gold {
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1),
+                  box-shadow 0.3s ease,
+                  letter-spacing 0.3s ease;
+    }
+    .btn-gold::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: rgba(255,255,255,0.12);
+      transform: translateX(-101%);
+      transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .btn-gold:hover::after { transform: translateX(0); }
+    .btn-gold:hover {
+      transform: translateY(-2px) scale(1.02);
+      box-shadow: 0 8px 32px rgba(201,168,76,0.35);
+      letter-spacing: 1.5px;
+    }
+    .btn-gold:active { transform: translateY(0) scale(0.98); }
+
+    /* ─── RESERVATION FORM PANEL ─── */
+    .reservation-form { transition: box-shadow 0.4s ease; }
+    .reservation-form:hover {
+      box-shadow: 0 20px 60px rgba(0,0,0,0.12), 0 0 0 1px rgba(201,168,76,0.1);
+    }
+
+    /* ─── SUCCESS MESSAGE POP ─── */
+    .success-msg {
+      animation: successPop 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+    }
+    @keyframes successPop {
+      0%   { opacity: 0; transform: scale(0.85) translateY(20px); }
+      100% { opacity: 1; transform: scale(1) translateY(0); }
+    }
+
+    /* ─── FLOATING GOLD PARTICLES ─── */
+    .page-header { position: relative; }
+    .particle {
+      position: absolute;
+      width: 4px; height: 4px;
+      border-radius: 50%;
+      background: rgba(201,168,76,0.6);
+      pointer-events: none;
+      animation: floatParticle var(--dur, 6s) var(--delay, 0s) ease-in-out infinite;
+      opacity: 0;
+    }
+    @keyframes floatParticle {
+      0%   { opacity: 0; transform: translate(0, 0) scale(0); }
+      10%  { opacity: 0.8; transform: translate(0, 0) scale(1); }
+      90%  { opacity: 0.4; }
+      100% { opacity: 0; transform: translate(var(--tx, 30px), -120px) scale(0.3); }
+    }
+
+    /* ─── SCROLL PROGRESS BAR ─── */
+    .scroll-progress {
+      position: fixed;
+      top: 0; left: 0;
+      height: 2px;
+      background: linear-gradient(90deg, var(--gold, #c9a84c), #f0d080);
+      width: 0%;
+      z-index: 10000;
+      transition: width 0.1s linear;
+      box-shadow: 0 0 8px rgba(201,168,76,0.5);
+    }
+
+    /* ─── CHECKBOX CUSTOM STYLE ─── */
+    #terms {
+      appearance: none; -webkit-appearance: none;
+      width: 18px !important; height: 18px;
+      border: 1.5px solid rgba(201,168,76,0.4);
+      border-radius: 3px; background: transparent;
+      cursor: pointer; position: relative;
+      transition: border-color 0.25s ease, background 0.25s ease;
+      flex-shrink: 0;
+    }
+    #terms:checked {
+      background: var(--gold, #c9a84c);
+      border-color: var(--gold, #c9a84c);
+    }
+    #terms:checked::after {
+      content: '✓';
+      position: absolute; top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      color: white; font-size: 11px; font-weight: bold;
+      animation: checkPop 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    @keyframes checkPop {
+      0%   { transform: translate(-50%, -50%) scale(0); }
+      100% { transform: translate(-50%, -50%) scale(1); }
+    }
+
+    /* ─── PAGE EXIT ─── */
+    body.page-exit {
+      animation: pageExit 0.5s cubic-bezier(0.76, 0, 0.24, 1) forwards;
+    }
+    @keyframes pageExit {
+      0%   { opacity: 1; transform: translateY(0); }
+      100% { opacity: 0; transform: translateY(-20px); }
+    }
+  </style>
+</head>
+<body>
+
+<div class="scroll-progress" id="scrollProgress"></div>
+
+<nav class="navbar" id="navbar">
+  <div class="nav-logo">
+    <span class="logo-emblem">☽</span>
+    <div class="logo-text-wrap">
+      <span class="logo-main">Mondélys</span>
+      <span class="logo-sub">Gastronomie du Monde</span>
+    </div>
+  </div>
+  <ul class="nav-links" id="navLinks">
+    <li><a href="index.html">Accueil</a></li>
+    <li><a href="menu.html">Menu</a></li>
+    <li><a href="reservation.html" class="active">Réservation</a></li>
+    <li><a href="contact.html">Contact</a></li>
+  </ul>
+  <div class="hamburger" id="hamburger"><span></span><span></span><span></span></div>
+</nav>
+
+<div class="page-header" id="pageHeader">
+  <!-- lazy loading sur le background : data-src porté par un <div> enfant
+       pour le hero, on garde l'URL inline car c'est le LCP (Largest Contentful Paint) -->
+  <div class="page-header-bg" style="background-image: url('https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=1400&q=80');"></div>
+  <div class="page-header-overlay"></div>
+  <div class="page-header-content">
+    <p class="section-label light">Réservation en ligne</p>
+    <h1>Réserver votre <em style="color:var(--gold-light); font-style:italic; font-family: var(--ff-body);">Table</em></h1>
+    <p>Commencez votre voyage culinaire autour du monde</p>
+  </div>
+</div>
+
+<section class="reservation-section">
+  <div class="container">
+    <div class="reservation-grid">
+
+      <div class="res-info reveal-left">
+        <p class="section-label">Informations Pratiques</p>
+        <h2>Bienvenue chez <em id="reservationRestaurantName" style="color:var(--gold)">Mondélys</em></h2>
+        <p>Réservez votre table en ligne. Nous confirmons toute réservation par SMS dans un délai de 2h.</p>
+        <div class="res-details">
+          <div class="res-detail reveal" style="transition-delay:0.1s">
+            <i class="fas fa-clock"></i>
+            <div><strong>Horaires</strong>
+            <span id="reservationHoursValue">Mar–Ven : 12h–15h / 19h–23h<br/>Sam–Dim : 12h–16h / 19h–23h30</span></div>
+          </div>
+          <div class="res-detail reveal" style="transition-delay:0.2s">
+            <i class="fas fa-globe"></i>
+            <div><strong>Menu Dégustation</strong>
+            <span>Le menu 7 plats nécessite une réservation 48h à l'avance.</span></div>
+          </div>
+          <div class="res-detail reveal" style="transition-delay:0.3s">
+            <i class="fas fa-users"></i>
+            <div><strong>Groupes</strong>
+            <span>Pour 8+ personnes, contactez-nous au +216 71 234 567.</span></div>
+          </div>
+          <div class="res-detail reveal" style="transition-delay:0.4s">
+            <i class="fas fa-leaf"></i>
+            <div><strong>Régimes Alimentaires</strong>
+            <span>Options végétariennes, végétaliennes et sans gluten disponibles.</span></div>
+          </div>
+          <div class="res-detail reveal" style="transition-delay:0.5s">
+            <i class="fas fa-wine-glass"></i>
+            <div><strong>Cave Internationale</strong>
+            <span>Plus de 200 références — vins français, sake japonais, mezcals mexicains.</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="reservation-form reveal-right">
+        <h3>✦ Nouvelle Réservation</h3>
+
+        <!-- novalidate désactive la validation HTML5 native → on gère tout via Validator -->
+        <form id="resForm" novalidate>
+          <div class="form-row reveal" style="transition-delay:0.1s">
+            <div class="form-group">
+              <label for="firstName">Prénom <span style="color:var(--gold)">*</span></label>
+              <input type="text" id="firstName" placeholder="Alessandro" required/>
+            </div>
+            <div class="form-group">
+              <label for="lastName">Nom <span style="color:var(--gold)">*</span></label>
+              <input type="text" id="lastName" placeholder="Ferrara" required/>
+            </div>
+          </div>
+          <div class="form-row reveal" style="transition-delay:0.18s">
+            <div class="form-group">
+              <label for="email">Email <span style="color:var(--gold)">*</span></label>
+              <input type="email" id="email" placeholder="votre@email.com" required/>
+            </div>
+            <div class="form-group">
+              <label for="phone">Téléphone <span style="color:var(--gold)">*</span></label>
+              <input type="tel" id="phone" placeholder="+216 71 000 000" required/>
+            </div>
+          </div>
+          <div class="form-row reveal" style="transition-delay:0.26s">
+            <div class="form-group">
+              <label for="date">Date <span style="color:var(--gold)">*</span></label>
+              <input type="date" id="date" required/>
+            </div>
+            <div class="form-group">
+              <label for="time">Heure <span style="color:var(--gold)">*</span></label>
+              <select id="time" required>
+                <option value="">Choisir...</option>
+                <optgroup label="Déjeuner">
+                  <option>12:00</option><option>12:30</option>
+                  <option>13:00</option><option>13:30</option>
+                  <option>14:00</option><option>14:30</option>
+                </optgroup>
+                <optgroup label="Dîner">
+                  <option>19:00</option><option>19:30</option>
+                  <option>20:00</option><option>20:30</option>
+                  <option>21:00</option><option>21:30</option>
+                  <option>22:00</option>
+                </optgroup>
+              </select>
+            </div>
+          </div>
+          <div class="form-row reveal" style="transition-delay:0.34s">
+            <div class="form-group">
+              <label for="guests">Couverts <span style="color:var(--gold)">*</span></label>
+              <select id="guests" required>
+                <option value="">Choisir...</option>
+                <option>1 personne</option><option>2 personnes</option>
+                <option>3 personnes</option><option>4 personnes</option>
+                <option>5 personnes</option><option>6 personnes</option>
+                <option>7 personnes</option><option>8 personnes</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="occasion">Occasion</label>
+              <select id="occasion">
+                <option value="">Aucune occasion particulière</option>
+                <option>Anniversaire</option>
+                <option>Fiançailles / Demande en mariage</option>
+                <option>Mariage</option>
+                <option>Repas d'affaires</option>
+                <option>Réunion de famille</option>
+                <option>Célébration</option>
+                <option>Autre</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group reveal" style="margin-bottom: 1.5rem; transition-delay:0.4s">
+            <label for="preorder">Pré-commande (recommandé pour le menu dégustation)</label>
+            <select id="preorder">
+              <option value="">Je choisirai sur place</option>
+              <option>Menu Dégustation 7 Plats (480 TND/pers) — préavis 48h</option>
+              <option>Menu Dégustation + Accord Vins (660 TND/pers)</option>
+              <option>Wagyu Nigiri Collection 🇯🇵</option>
+              <option>Homard Bleu Thermidor 🇫🇷</option>
+              <option>Biryani Hyderabadi Royal 🇮🇳</option>
+              <option>Osso Buco Milanaise 🇮🇹</option>
+            </select>
+          </div>
+          <div class="form-group reveal" style="margin-bottom: 1.5rem; transition-delay:0.46s">
+            <label for="requests">Demandes Particulières</label>
+            <textarea id="requests" placeholder="Allergies, régime alimentaire, occasion spéciale..."></textarea>
+          </div>
+          <div class="form-group reveal" style="flex-direction: row; align-items: flex-start; gap: 0.75rem; margin-bottom: 1.5rem; transition-delay:0.52s">
+            <input type="checkbox" id="terms" style="width: auto; margin-top: 4px;" required/>
+            <label for="terms" style="text-transform: none; letter-spacing: 0; font-size: 0.9rem; font-family: var(--ff-body); cursor: pointer;">
+              J'accepte les conditions de réservation et la politique d'annulation (24h avant).
+            </label>
+          </div>
+          <div class="form-submit reveal" style="transition-delay:0.58s">
+            <button type="submit" class="btn btn-gold">
+              <i class="fas fa-check" style="margin-right: 8px;"></i>Confirmer ma Réservation
+            </button>
+          </div>
+        </form>
+
+        <!-- Message de succès (affiché en remplacement du formulaire) -->
+        <div class="success-msg" id="successMsg" style="display:none">
+          <i class="fas fa-check-circle" style="font-size: 2rem; display: block; margin-bottom: 0.75rem;"></i>
+          <strong style="display: block; font-family: var(--ff-display); font-size: 1.1rem; margin-bottom: 0.5rem;">Réservation Confirmée ! ✦</strong>
+          Un SMS de confirmation vous sera envoyé sous 2h.<br/>
+          Réf : <strong id="resRef"></strong>
+        </div>
+        <p class="form-notice">Confirmation SMS sous 2h · Annulation gratuite jusqu'à 24h avant</p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="footer-top-pattern"></div>
+  <div class="container footer-grid">
+    <div class="footer-brand">
+      <div class="nav-logo" style="margin-bottom: 1rem;">
+        <span class="logo-emblem">✦</span>
+        <div class="logo-text-wrap">
+          <span class="logo-main">Mondélys</span>
+          <span class="logo-sub" style="color: rgba(255,255,255,0.4);">Gastronomie du Monde</span>
+        </div>
+      </div>
+      <p>Un voyage culinaire autour du monde au cœur de Tunis.</p>
+      <div class="socials">
+        <a href="#"><i class="fab fa-facebook-f"></i></a>
+        <a href="#"><i class="fab fa-instagram"></i></a>
+        <a href="#"><i class="fab fa-whatsapp"></i></a>
+      </div>
+    </div>
+    <div class="footer-links">
+      <h4>Navigation</h4>
+      <ul>
+        <li><a href="index.html">Accueil</a></li>
+        <li><a href="menu.html">Menu</a></li>
+        <li><a href="reservation.html">Réservation</a></li>
+        <li><a href="contact.html">Contact</a></li>
+      </ul>
+    </div>
+    <div class="footer-hours">
+      <h4>Horaires</h4>
+      <p>Mardi – Vendredi<br/><strong>12h00 – 15h00 · 19h00 – 23h00</strong></p>
+      <p>Samedi – Dimanche<br/><strong>12h00 – 16h00 · 19h00 – 23h30</strong></p>
+      <p>Lundi : <strong>Fermé</strong></p>
+    </div>
+    <div class="footer-contact">
+      <h4>Contact</h4>
+      <p><i class="fas fa-map-marker-alt"></i> 15 Avenue Habib Bourguiba, Tunis</p>
+      <p><i class="fas fa-phone"></i> +216 71 234 567</p>
+      <p><i class="fas fa-envelope"></i> contact@mondelys.tn</p>
+    </div>
+  </div>
+  <div class="footer-bottom"><p>&copy; 2024 Mondélys – Gastronomie du Monde. Tous droits réservés.</p></div>
+</footer>
+
+<script src="main.js"></script>
+<script src="publicSettings.js"></script>
+<!-- Utilitaires partagés : Toast, Validator, Skeleton, LazyImage -->
+<script src="mondelys-utils.js"></script>
+
+<script>
+  /* ─── PAGE LOAD ─── */
+  window.addEventListener('load', () => {
+    document.getElementById('pageHeader').classList.add('loaded');
+    spawnParticles();
+  });
+
+  /* ─── PARTICLES (inchangé) ─── */
+  function spawnParticles() {
+    const header = document.getElementById('pageHeader');
+    for (let i = 0; i < 18; i++) {
+      const p = document.createElement('div');
+      p.className = 'particle';
+      p.style.cssText = `
+        left: ${Math.random() * 100}%;
+        bottom: ${Math.random() * 40}%;
+        --dur: ${4 + Math.random() * 5}s;
+        --delay: ${Math.random() * 6}s;
+        --tx: ${(Math.random() - 0.5) * 80}px;
+        width: ${2 + Math.random() * 4}px;
+        height: ${2 + Math.random() * 4}px;
+      `;
+      header.appendChild(p);
+    }
+  }
+
+  /* ─── SCROLL REVEAL (inchangé) ─── */
+  const revealObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        revealObserver.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+  document.querySelectorAll('.reveal, .reveal-left, .reveal-right').forEach(el => revealObserver.observe(el));
+
+  /* ─── SCROLL PROGRESS BAR (inchangé) ─── */
+  window.addEventListener('scroll', () => {
+    const pct = (window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * 100;
+    document.getElementById('scrollProgress').style.width = pct + '%';
+  }, { passive: true });
+
+  /* ─── PAGE EXIT TRANSITIONS (inchangé) ─── */
+  document.querySelectorAll('a[href]').forEach(link => {
+    const href = link.getAttribute('href');
+    if (!href || href.startsWith('#') || href.startsWith('http') || href.startsWith('mailto') || href.startsWith('tel')) return;
+    link.addEventListener('click', (e) => {
+      e.preventDefault();
+      document.body.classList.add('page-exit');
+      setTimeout(() => { window.location = href; }, 420);
+    });
+  });
+
+  /* ─── DATE MIN ─── */
+  document.getElementById('date').min = new Date().toISOString().split('T')[0];
+
+  /* ──────────────────────────────────────────────────────────────
+     VALIDATION TEMPS-RÉEL — Formulaire de réservation
+     Règles par champ :
+       - firstName, lastName : required
+       - email               : required + format email
+       - phone               : required + format tel
+       - date                : required + doit être >= aujourd'hui
+       - time                : select (valeur non vide)
+       - guests              : select
+     La validation s'attache via Validator.attach() dès le DOMContentLoaded.
+  ────────────────────────────────────────────────────────────────── */
+  const resForm = document.getElementById('resForm');
+
+  /* Règle personnalisée : la date ne peut pas être dans le passé */
+  const futureDate = (v) => {
+    if (!v) return 'Veuillez choisir une date.';
+    const today = new Date().toISOString().split('T')[0];
+    return v >= today || 'La date doit être aujourd\'hui ou ultérieure.';
+  };
+
+  const resRules = {
+    firstName: ['required'],
+    lastName:  ['required'],
+    email:     ['required', 'email'],
+    phone:     ['required', 'phone'],
+    date:      ['required', futureDate],
+    time:      ['select'],
+    guests:    ['select'],
+  };
+
+  /* Attache la validation temps-réel (blur + input) */
+  Validator.attach(resForm, resRules);
+
+  /* ─── SOUMISSION ─── */
+  resForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    /* Valide tous les champs obligatoires avant envoi */
+    if (!Validator.isFormValid(resForm, resRules)) {
+      Toast.show('Veuillez corriger les champs en rouge.', 'error');
+      return;
+    }
+
+    /* Validation de la checkbox (non gérée par Validator car logique différente) */
+    if (!document.getElementById('terms').checked) {
+      Toast.show('Veuillez accepter les conditions de réservation.', 'warning');
+      return;
+    }
+
+    const guestsVal = document.getElementById('guests').value;
+    const guestsCount = parseInt(guestsVal, 10);
+    if (Number.isNaN(guestsCount)) {
+      Toast.show('Nombre de couverts invalide.', 'error');
+      return;
+    }
+
+    /* Spinner sur le bouton pendant l'envoi */
+    const btn = e.target.querySelector('[type="submit"]');
+    const originalHTML = btn.innerHTML;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin" style="margin-right:8px"></i>Traitement...';
+    btn.disabled = true;
+
+    try {
+      const payload = {
+        firstName:       document.getElementById('firstName').value,
+        lastName:        document.getElementById('lastName').value,
+        email:           document.getElementById('email').value,
+        phone:           document.getElementById('phone').value,
+        reservationDate: document.getElementById('date').value,
+        reservationTime: document.getElementById('time').value + ':00',
+        guestsCount,
+        occasion:        document.getElementById('occasion').value || null,
+        preorder:        document.getElementById('preorder').value || null,
+        specialRequests: document.getElementById('requests').value || null,
+      };
+
+      const response = await fetch(window.apiUrl('/api/reservations'), {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+
+      const body = await response.json().catch(() => ({}));
+      if (!response.ok) throw new Error(body.message || 'Impossible d\'enregistrer la réservation.');
+
+      /* Succès : affiche le bloc de confirmation */
+      document.getElementById('resRef').textContent = body.referenceCode;
+      document.getElementById('resForm').style.display = 'none';
+      document.getElementById('successMsg').style.display = 'block';
+
+      /* Toast succès (remplace le alert d'origine) */
+      Toast.show('Réservation confirmée ! Un SMS vous sera envoyé sous 2h.', 'success', 6000);
+
+    } catch (error) {
+      /* Toast erreur (remplace le alert d'origine) */
+      Toast.show(error.message || 'Une erreur est survenue. Réessayez.', 'error');
+      btn.innerHTML = originalHTML;
+      btn.disabled = false;
+    }
+  });
+</script>
+</body>
+</html>

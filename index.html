@@ -1,0 +1,861 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Mondélys – Gastronomie du Monde</title>
+    <link rel="stylesheet" href="style.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Lora:ital,wght@0,400;0,500;1,400&family=Raleway:wght@300;400;500&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <style>
+      /* ─── FORM EFFECTS ─── */
+      .form-group { position: relative; }
+      .form-group input,
+      .form-group select,
+      .form-group textarea {
+        transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.25s ease;
+      }
+      .form-group input:focus,
+      .form-group select:focus,
+      .form-group textarea:focus {
+        transform: translateY(-1px);
+        box-shadow: 0 4px 20px rgba(201,168,76,0.15), 0 0 0 2px rgba(201,168,76,0.2);
+        outline: none;
+      }
+      .form-group label { transition: color 0.25s ease; }
+      .form-group:focus-within label { color: var(--gold, #c9a84c); }
+
+      /* ─── FLOATING BUTTON ─── */
+      .float-badge {
+        position: fixed;
+        bottom: 2rem; right: 2rem;
+        z-index: 999;
+        width: 76px; height: 76px;
+        border-radius: 50%;
+        background: var(--gold, #c9a84c);
+        display: flex; flex-direction: column;
+        align-items: center; justify-content: center;
+        box-shadow: 0 8px 30px rgba(201,168,76,.5);
+        text-decoration: none;
+        transition: transform 0.2s;
+        animation: float-pulse 3s ease-in-out infinite;
+      }
+      .float-badge:hover { transform: scale(1.1); }
+      .float-badge i { color: #1a1208; font-size: 1.35rem; }
+      .float-badge span {
+        font-family: var(--ff-ui,'Raleway',sans-serif);
+        font-size: 8.5px; font-weight: 700;
+        letter-spacing: .1em; text-transform: uppercase;
+        color: #1a1208; margin-top: 3px;
+      }
+      @keyframes float-pulse {
+        0%,100% { box-shadow: 0 8px 30px rgba(171,142,64,.5); }
+        50%      { box-shadow: 0 8px 40px rgba(201,168,76,.8), 0 0 0 12px rgba(201,168,76,.07); }
+      }
+
+      /* ─── RATING SUMMARY ─── */
+      .rating-summary {
+        display: flex; align-items: center; justify-content: center;
+        gap: 1.5rem; flex-wrap: wrap;
+        margin: 0 auto 2rem;
+        padding: 1.5rem 2rem;
+        background: var(--white);
+        border-radius: 16px;
+        box-shadow: 0 2px 20px rgba(0,0,0,.06);
+        max-width: 520px;
+      }
+      .rating-big {
+        font-family: var(--ff-display,'Cinzel',serif);
+        font-size: 3rem; font-weight: 700;
+        color: var(--gold,#c9a84c); line-height: 1;
+      }
+      .rating-stars-row { font-size: 1.1rem; color: var(--gold,#c9a84c); letter-spacing: .1em; }
+      .rating-count {
+        font-family: var(--ff-ui,'Raleway',sans-serif);
+        font-size: 0.8rem; color: var(--text-light,#aaa); margin-top: 4px;
+      }
+      .rating-bars { display: flex; flex-direction: column; gap: 5px; }
+      .rating-bar-row { display: flex; align-items: center; gap: 8px; }
+      .rating-bar-label { font-size: 11px; color: var(--text-light,#aaa); width: 10px; text-align: right; font-family: var(--ff-ui,'Raleway',sans-serif); }
+      .rating-bar-track { width: 90px; height: 5px; background: rgba(201,168,76,.15); border-radius: 10px; overflow: hidden; }
+      .rating-bar-fill { height: 100%; background: var(--gold,#c9a84c); border-radius: 10px; transition: width .8s ease; }
+      .rating-bar-pct { font-size: 10px; color: var(--text-light,#bbb); font-family: var(--ff-ui,'Raleway',sans-serif); width: 28px; }
+
+      /* ─── FILTER BAR ─── */
+      .reviews-filter-bar {
+        display: flex; flex-wrap: wrap; gap: 10px;
+        align-items: center; justify-content: center;
+        margin-bottom: 1.5rem;
+      }
+      .reviews-filter-btn {
+        padding: 7px 18px; border-radius: 50px;
+        border: 1px solid rgba(201,168,76,0.3);
+        background: transparent;
+        color: var(--text-light,#888);
+        font-family: var(--ff-ui,'Raleway',sans-serif);
+        font-size: 13px; font-weight: 500;
+        cursor: pointer; transition: all 0.2s ease; letter-spacing: .02em;
+      }
+      .reviews-filter-btn:hover {
+        background: rgba(201,168,76,.08);
+        color: var(--text,#1a1a1a);
+        border-color: rgba(201,168,76,.5);
+      }
+      .reviews-filter-btn.active {
+        background: var(--gold,#c9a84c);
+        border-color: var(--gold,#c9a84c);
+        color: #fff; font-weight: 600;
+        box-shadow: 0 4px 12px rgba(201,168,76,.35);
+      }
+      .filter-count {
+        font-weight: 600; border-radius: 30px;
+        padding: 0 6px; margin-left: 6px;
+        font-size: 11px; line-height: 18px; display: inline-block;
+      }
+      .reviews-filter-btn.active .filter-count { color: #fff; }
+
+      /* Nouveau bouton Laisser un avis bien visible */
+      .review-cta-wrapper {
+        text-align: center;
+        margin: 1rem 0 2rem;
+      }
+      .review-primary-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 12px;
+        background: var(--gold, #c9a84c);
+        color: #1a1208;
+        padding: 12px 32px;
+        border-radius: 50px;
+        font-family: var(--ff-ui,'Raleway',sans-serif);
+        font-weight: 700;
+        font-size: 14px;
+        letter-spacing: .08em;
+        text-transform: uppercase;
+        border: none;
+        cursor: pointer;
+        transition: all 0.25s ease;
+        box-shadow: 0 4px 14px rgba(201,168,76,.35);
+      }
+      .review-primary-btn:hover {
+        transform: translateY(-2px);
+        background: #dbb94e;
+        box-shadow: 0 8px 22px rgba(201,168,76,.5);
+      }
+      .review-primary-btn i { font-size: 1rem; }
+
+      /* ─── REVIEW CARDS ─── */
+      #filteredReviewsGrid .testi-card {
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+        display: flex; flex-direction: column;
+        animation: fadeInUp 0.35s ease both;
+      }
+      @keyframes fadeInUp {
+        from { opacity: 0; transform: translateY(14px); }
+        to   { opacity: 1; transform: translateY(0); }
+      }
+      #filteredReviewsGrid .testi-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 12px 30px rgba(0,0,0,0.1);
+      }
+      .testi-card-header {
+        display: flex; justify-content: space-between;
+        align-items: flex-start; margin-bottom: 0.5rem;
+      }
+      .testi-card-date {
+        font-family: var(--ff-ui,'Raleway',sans-serif);
+        font-size: 11px; color: var(--text-light,#bbb); letter-spacing: .04em;
+      }
+      .testi-card-title {
+        font-family: var(--ff-display,'Cinzel',serif);
+        font-size: .9rem; font-weight: 600;
+        color: var(--text,#1a1a1a); margin-bottom: .5rem;
+      }
+      .testi-card-flex-grow { flex: 1; }
+      .reviews-empty {
+        text-align: center; padding: 3rem 1rem;
+        color: var(--text-light,#aaa);
+        font-family: var(--ff-ui,'Raleway',sans-serif);
+        font-size: 14px; grid-column: 1 / -1;
+      }
+      .reviews-empty i { font-size: 2rem; display: block; margin-bottom: .75rem; color: rgba(201,168,76,.4); }
+
+      /* ─── PAGINATION ─── */
+      .reviews-pagination {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 1rem;
+        margin-top: 2.5rem;
+      }
+      .pagination-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 10px 24px;
+        border-radius: 50px;
+        border: 1.5px solid var(--gold,#c9a84c);
+        background: transparent;
+        color: var(--gold,#c9a84c);
+        font-family: var(--ff-ui,'Raleway',sans-serif);
+        font-size: 13px; font-weight: 600;
+        letter-spacing: .06em; text-transform: uppercase;
+        cursor: pointer;
+        transition: all 0.25s ease;
+      }
+      .pagination-btn:hover:not(:disabled) {
+        background: var(--gold,#c9a84c);
+        color: #fff;
+        box-shadow: 0 6px 20px rgba(201,168,76,.35);
+        transform: translateY(-1px);
+      }
+      .pagination-btn:disabled {
+        opacity: 0.4;
+        cursor: not-allowed;
+        border-color: #ccc;
+        color: #aaa;
+      }
+      .page-indicator {
+        font-family: var(--ff-ui,'Raleway',sans-serif);
+        font-size: 13px;
+        color: var(--text-light,#aaa);
+        background: rgba(201,168,76,.08);
+        padding: 5px 14px;
+        border-radius: 40px;
+      }
+    </style>
+  </head>
+  <body>
+
+    <!-- BOUTON FLOTTANT -->
+    <a href="reservation.html" class="float-badge" title="Réserver une table">
+      <i class="fas fa-utensils"></i>
+      <span>Réserver</span>
+    </a>
+    <!-- NAV -->
+    <nav class="navbar" id="navbar">
+      <div class="nav-logo">
+        <span class="logo-emblem">☽</span>
+        <div class="logo-text-wrap">
+          <span class="logo-main">Mondélys</span>
+          <span class="logo-sub">Gastronomie du Monde</span>
+        </div>
+      </div>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="index.html" class="active">Accueil</a></li>
+        <li><a href="menu.html">Menu</a></li>
+        <li><a href="reservation.html">Réservation</a></li>
+        <li><a href="contact.html">Contact</a></li>
+      </ul>
+      <div class="hamburger" id="hamburger">
+        <span></span><span></span><span></span>
+      </div>
+    </nav>
+
+    <!-- HERO -->
+    <section class="hero">
+      <div class="hero-bg"></div>
+      <div class="hero-overlay"></div>
+      <div class="hero-pattern"></div>
+      <div class="hero-content">
+        <p class="hero-label animate-up">Restaurant Gastronomique · Tunis</p>
+        <h1 class="hero-title animate-up delay1">Le Monde dans<br />votre <em>Assiette</em></h1>
+        <p class="hero-desc animate-up delay2">
+          Un voyage culinaire à travers les saveurs les plus emblématiques du globe — Japon, Mexique,
+          Italie, Syrie, Palestine, Liban, Jordanie — revisitées avec une élégance contemporaine.
+        </p>
+        <div class="hero-btns animate-up delay3">
+          <a href="#menu-link" class="btn btn-gold">Découvrir le Menu</a>
+          <a href="#reservation-link" class="btn btn-outline">Réserver une Table</a>
+        </div>
+      </div>
+      <div class="hero-scroll">
+        <span>Découvrir</span>
+        <div class="scroll-line"></div>
+      </div>
+    </section>
+
+    <!-- ABOUT -->
+    <section class="about section">
+      <div class="container about-grid">
+        <div class="about-img-wrap">
+          <img src="https://images.unsplash.com/photo-1600565193348-f74bd3c7ccdf?w=700&q=80" alt="Chef Mondélys" class="about-img" width="700" height="700" loading="lazy" />
+          <div class="about-badge"><span class="badge-icon">✦</span><span class="badge-txt">5 Chefs Étoilés</span></div>
+          <div class="about-img2-wrap">
+            <img src="https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=300&q=80" alt="Cuisine du monde" class="about-img2" width="300" height="300" loading="lazy" />
+          </div>
+        </div>
+        <div class="about-text">
+          <p class="section-label">Notre Histoire</p>
+          <h2 class="section-title">Une cuisine qui<br />célèbre la diversité<br />du <em>Monde</em></h2>
+          <p class="about-desc">
+            Fondé par le Chef Alessandro Ferrara, Mondélys est né d'une passion pour la gastronomie
+            internationale. Cinq chefs étoilés, venus des quatre coins du globe, collaborent pour créer
+            des expériences culinaires qui transcendent les frontières.
+          </p>
+          <div class="about-quote">
+            <i class="fas fa-quote-left"></i>
+            <p>"La nourriture est la langue universelle qui réunit tous les peuples du monde en une seule table."</p>
+            <span>— Chef Alessandro Ferrara, Fondateur</span>
+          </div>
+          <div class="about-stats">
+            <div class="stat"><span class="stat-n">+5</span><span class="stat-l">Pays représentés</span></div>
+            <div class="stat"><span class="stat-n">+5</span><span class="stat-l">Plats signatures</span></div>
+            <div class="stat"><span class="stat-n">5</span><span class="stat-l">Chefs étoilés</span></div>
+          </div>
+          <a id="menu-link" href="menu.html" class="btn btn-gold">Voir le Menu</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- SIGNATURE DISHES -->
+    <section class="dishes section bg-ivory">
+      <div class="container">
+        <p class="section-label center">Nos Spécialités</p>
+        <h2 class="section-title center">Plats <em>Signatures</em></h2>
+        <div class="dishes-grid">
+          <div class="dish-card">
+            <div class="dish-img-wrap">
+              <img src="/images/gyoza.jpg" alt="GYOZA — ravioles grillées porc ibérique et truffe" width="400" height="280" loading="lazy" />
+              <span class="dish-tag">Chef's Choice</span>
+            </div>
+            <div class="dish-info">
+              <h3>GYOZA</h3>
+              <p>6 ravioles grillées-vapeur, farce porc ibérique, truffe noire et gingembre confit, sauce ponzu maison — la quintessence de la précision japonaise.</p>
+              <div class="dish-footer">
+                <span class="dish-origin"><i class="fas fa-globe"></i> 🇯🇵 Tokyo, Japon</span>
+                <span class="dish-price">56 TND</span>
+              </div>
+            </div>
+          </div>
+          <div class="dish-card featured">
+            <div class="dish-img-wrap">
+              <img src="/images/rigatoni.jpg" alt="Rigatoni — sauce viande mijotée aux herbes italiennes" width="400" height="280" loading="lazy" />
+              <span class="dish-tag">Signature Mondélys</span>
+            </div>
+            <div class="dish-info">
+              <h3>Rigatoni</h3>
+              <p>Rigatoni al dente, enrobés d'une sauce à la viande mijotée lentement aux tomates et herbes italiennes, pour un goût authentique et réconfortant.</p>
+              <div class="dish-footer">
+                <span class="dish-origin"><i class="fas fa-globe"></i> 🇮🇹 Italie</span>
+                <span class="dish-price">42 TND</span>
+              </div>
+            </div>
+          </div>
+          <div class="dish-card">
+            <div class="dish-img-wrap">
+              <img src="/images/maklouba.jpg" alt="Maqlouba — riz, légumes et viande renversé" width="400" height="280" loading="lazy" />
+              <span class="dish-tag">Tradition</span>
+            </div>
+            <div class="dish-info">
+              <h3>Maqlouba</h3>
+              <p>Délicieux mélange de riz, légumes et viande, préparé avec soin et présenté renversé, pour un festival de saveurs authentiques.</p>
+              <div class="dish-footer">
+                <span class="dish-origin"><i class="fas fa-globe"></i> ᴏʀ Orientale</span>
+                <span class="dish-price">35 TND</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="center-btn">
+          <a href="menu.html" class="btn btn-gold">Voir Tout le Menu</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ORIGINES -->
+    <section class="ingredients section">
+      <div class="container">
+        <p class="section-label center">Notre Philosophie</p>
+        <h2 class="section-title center">Des <em>Origines</em> Authentiques</h2>
+        <div class="ing-grid">
+          <div class="ing-card">
+            <div class="ing-icon">🇯🇵</div>
+            <h3>Japon</h3>
+            <p>Wagyu fondant, saumon premium, ramen artisanaux et sauces soja délicatement fermentées — une cuisine d'exception inspirée de Tokyo, Kyoto et Fukuoka.</p>
+          </div>
+          <div class="ing-card">
+            <div class="ing-icon">🇮🇹</div>
+            <h3>Italie</h3>
+            <p>Pâtes fraîches, burrata crémeuse, mozzarella fondante et huile d'olive extra vierge — des recettes traditionnelles venues de Rome, Naples et Milan.</p>
+          </div>
+          <div class="ing-card">
+            <div class="ing-icon">🇲🇽</div>
+            <h3>Mexique</h3>
+            <p>Piments ancho et chipotle fumés, maïs authentique, avocat frais et chocolat intense — des saveurs vibrantes inspirées de Puebla et Mexico City.</p>
+          </div>
+          <div class="ing-card">
+            <div class="ing-icon">ᴏʀ</div>
+            <h3>Orientale</h3>
+            <p>Épices parfumées, tahini, boulgour, pois chiches et herbes fraîches — une cuisine généreuse inspirée du Liban, de la Syrie et de la Palestine.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== MENU DU JOUR ===== -->
+<section class="section daily-menu-section" id="menuDuJour">
+  <div class="container">
+    <div class="section-intro">
+      <span class="section-label">Aujourd'hui seulement</span>
+      <h2 class="section-title">Menu <em>du Jour</em></h2>
+      <p class="section-sub">Sélection éphémère, renouvelée chaque matin par notre chef.</p>
+    </div>
+
+    <!-- Timer -->
+    <div class="daily-timer" id="dailyTimer">
+      <i class="fas fa-clock"></i>
+      <span>Disponible encore : </span>
+      <strong id="timerCountdown">--:--:--</strong>
+    </div>
+
+    <!-- Chef note -->
+    <blockquote class="chef-note" id="chefNote" style="display:none;">
+      <i class="fas fa-quote-left"></i>
+      <span id="chefNoteText"></span>
+      <cite>— Le Chef</cite>
+    </blockquote>
+
+    <!-- Plats -->
+    <div class="daily-dishes-grid" id="dailyDishesGrid">
+      <!-- Skeleton pendant chargement -->
+      <div class="daily-dish-skeleton"></div>
+      <div class="daily-dish-skeleton"></div>
+      <div class="daily-dish-skeleton"></div>
+    </div>
+
+    <!-- Fallback si aucun menu -->
+    <div class="daily-empty" id="dailyEmpty" style="display:none;">
+      <i class="fas fa-moon"></i>
+      <p>Le menu du jour n'est pas encore disponible. Revenez ce soir !</p>
+    </div>
+  </div>
+</section>
+
+    <!-- CTA RESERVATION -->
+    <section class="cta-section">
+      <div class="cta-overlay"></div>
+      <div class="cta-pattern"></div>
+      <div id="reservation-link" class="container cta-content">
+        <p class="section-label light">Réservation</p>
+        <h2 class="section-title light">Vivez l'Expérience<br /><em>Mondélys</em></h2>
+        <p class="cta-desc">
+          Disponible du mardi au dimanche. Réservation recommandée, particulièrement pour le menu
+          dégustation 7 plats qui nécessite une préparation anticipée de nos chefs.
+        </p>
+        <a   href="reservation.html" class="btn btn-gold">Réserver ma Table</a>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════════
+         TESTIMONIALS — Pagination + bouton avis bien visible
+    ══════════════════════════════════════════════ -->
+    <section class="testimonials section" style="background: var(--ivory2)">
+      <div class="container">
+        <p class="section-label center">Avis Clients</p>
+        <h2 class="section-title center">Ils ont <em>Voyagé</em> avec Nous</h2>
+
+        <!-- NOTE GLOBALE -->
+        <div class="rating-summary" id="ratingSummary">
+          <div style="text-align:center">
+            <div class="rating-big" id="avgRating">—</div>
+            <div class="rating-stars-row" id="avgStars">☆☆☆☆☆</div>
+            <div class="rating-count" id="avgCount">Chargement…</div>
+          </div>
+          <div class="rating-bars">
+            <div class="rating-bar-row"><span class="rating-bar-label">5</span><div class="rating-bar-track"><div class="rating-bar-fill" id="bar5" style="width:0%"></div></div><span class="rating-bar-pct" id="pct5">0%</span></div>
+            <div class="rating-bar-row"><span class="rating-bar-label">4</span><div class="rating-bar-track"><div class="rating-bar-fill" id="bar4" style="width:0%"></div></div><span class="rating-bar-pct" id="pct4">0%</span></div>
+            <div class="rating-bar-row"><span class="rating-bar-label">3</span><div class="rating-bar-track"><div class="rating-bar-fill" id="bar3" style="width:0%"></div></div><span class="rating-bar-pct" id="pct3">0%</span></div>
+            <div class="rating-bar-row"><span class="rating-bar-label">2</span><div class="rating-bar-track"><div class="rating-bar-fill" id="bar2" style="width:0%"></div></div><span class="rating-bar-pct" id="pct2">0%</span></div>
+            <div class="rating-bar-row"><span class="rating-bar-label">1</span><div class="rating-bar-track"><div class="rating-bar-fill" id="bar1" style="width:0%"></div></div><span class="rating-bar-pct" id="pct1">0%</span></div>
+          </div>
+        </div>
+
+        <!-- FILTRES -->
+        <div class="reviews-filter-bar" id="reviewsFilterBar">
+          <button class="reviews-filter-btn active" data-rating="0">Tous <span class="filter-count" id="countAll">0</span></button>
+          <button class="reviews-filter-btn" data-rating="5">★★★★★ <span class="filter-count" id="count5">0</span></button>
+          <button class="reviews-filter-btn" data-rating="4">★★★★ <span class="filter-count" id="count4">0</span></button>
+          <button class="reviews-filter-btn" data-rating="3">★★★ <span class="filter-count" id="count3">0</span></button>
+          <button class="reviews-filter-btn" data-rating="2">★★ et moins <span class="filter-count" id="count2">0</span></button>
+        </div>
+
+        <!-- BOUTON LAISSER UN AVIS (bien visible, juste après les filtres) -->
+        <div class="review-cta-wrapper">
+          <button id="showReviewBtnTop" class="review-primary-btn" type="button">
+            <i class="fas fa-pen-fancy"></i> Laisser un avis
+          </button>
+        </div>
+
+        <!-- GRILLE AVIS -->
+        <div class="testi-grid" id="filteredReviewsGrid"></div>
+
+        <!-- PAGINATION : Précédent / Suivant + indicateur -->
+        <div class="reviews-pagination" id="reviewsPagination" style="display:none">
+          <button class="pagination-btn" id="prevPageBtn" disabled>
+            <i class="fas fa-chevron-left"></i> Précédent
+          </button>
+          <span class="page-indicator" id="pageIndicator">Page 1 / 1</span>
+          <button class="pagination-btn" id="nextPageBtn">
+            Suivant <i class="fas fa-chevron-right"></i>
+          </button>
+        </div>
+
+        <!-- FORMULAIRE AVIS (caché initialement) -->
+        <div style="max-width:760px;margin:3rem auto 0;text-align:center">
+          <div id="reviewFormWrapper" style="display:none; margin-top:2rem; background:var(--white); padding:2rem; border-radius:12px; box-shadow:var(--shadow); text-align:left">
+            <h3 style="font-family:var(--ff-display);font-size:1.5rem;margin-bottom:.5rem">Partagez votre expérience</h3>
+            <span style="display:block;margin-bottom:1.5rem;color:var(--text-light)">Votre retour nous aide à nous améliorer.</span>
+
+            <form id="reviewForm" novalidate>
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="reviewName">Nom complet <span style="color:var(--gold)">*</span></label>
+                  <input type="text" id="reviewName" placeholder="Sophie Martin" required />
+                </div>
+                <div class="form-group">
+                  <label for="reviewEmail">Adresse email <span style="color:var(--gold)">*</span></label>
+                  <input type="email" id="reviewEmail" placeholder="sophie@example.com" required />
+                </div>
+              </div>
+              <div class="form-row" style="margin-bottom:1.5rem">
+                <div class="form-group">
+                  <label for="reviewRating">Note <span style="color:var(--gold)">*</span></label>
+                  <select id="reviewRating" required>
+                    <option value="">Sélectionnez une note</option>
+                    <option value="5">★★★★★ — Excellent</option>
+                    <option value="4">★★★★☆ — Très bien</option>
+                    <option value="3">★★★☆☆ — Bien</option>
+                    <option value="2">★★☆☆☆ — Passable</option>
+                    <option value="1">★☆☆☆☆ — Décevant</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label for="reviewTitle">Titre de l'avis (optionnel)</label>
+                  <input type="text" id="reviewTitle" placeholder="Un dîner inoubliable" />
+                </div>
+              </div>
+              <div class="form-group" style="margin-bottom:1.5rem">
+                <label for="reviewMessage">Votre message <span style="color:var(--gold)">*</span></label>
+                <textarea id="reviewMessage" rows="4" placeholder="Décrivez votre expérience chez Mondélys..." required></textarea>
+              </div>
+              <div class="form-group" style="flex-direction:row;align-items:center;gap:.75rem;margin-bottom:1.5rem;display:flex">
+                <input type="checkbox" id="reviewConsent" required style="width:18px;height:18px;accent-color:var(--gold,#c9a84c);flex-shrink:0" />
+                <label for="reviewConsent" style="text-transform:none;letter-spacing:0;font-size:.9rem;cursor:pointer;margin-bottom:0">
+                  J'accepte que mon avis soit publié et que mes données soient traitées conformément à la politique de confidentialité.
+                </label>
+              </div>
+              <div class="form-submit" style="display:flex;justify-content:flex-end;gap:1rem;margin-top:1rem">
+                <button type="button" id="cancelReviewBtn" class="btn btn-outline" style="background:transparent;border:1px solid var(--ivory3);color:var(--text)">Annuler</button>
+                <button type="submit" class="btn btn-gold">
+                  <i class="fas fa-paper-plane" style="margin-right:8px"></i>Publier mon avis
+                </button>
+              </div>
+            </form>
+            <div id="reviewMsg" style="display:none;margin-top:1rem;padding:1rem;border-radius:6px;font-family:var(--ff-ui);font-size:.85rem"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+      <div class="footer-top-pattern"></div>
+      <div class="container footer-grid">
+        <div class="footer-brand">
+          <div class="nav-logo" style="margin-bottom:1rem">
+            <span class="logo-emblem">✦</span>
+            <div class="logo-text-wrap">
+              <span class="logo-main">Mondélys</span>
+              <span class="logo-sub" style="color:rgba(255,255,255,.4)">Gastronomie du Monde</span>
+            </div>
+          </div>
+          <p>Un voyage culinaire autour du monde, sublimé dans un cadre raffiné au cœur de Tunis. Cinq chefs étoilés, 3 continents, une seule passion.</p>
+          <div class="socials">
+            <a href="#"><i class="fab fa-facebook-f"></i></a>
+            <a href="#"><i class="fab fa-instagram"></i></a>
+            <a href="#"><i class="fab fa-whatsapp"></i></a>
+          </div>
+        </div>
+        <div class="footer-links">
+          <h4>Navigation</h4>
+          <ul>
+            <li><a href="index.html">Accueil</a></li>
+            <li><a href="menu.html">Menu</a></li>
+            <li><a href="reservation.html">Réservation</a></li>
+            <li><a href="contact.html">Contact</a></li>
+          </ul>
+        </div>
+        <div class="footer-hours">
+          <h4>Horaires</h4>
+          <p>Mardi – Vendredi<br /><strong>12h00 – 15h00 · 19h00 – 23h00</strong></p>
+          <p>Samedi – Dimanche<br /><strong>12h00 – 16h00 · 19h00 – 23h30</strong></p>
+          <p>Lundi : <strong>Fermé</strong></p>
+        </div>
+        <div class="footer-contact">
+          <h4>Contact</h4>
+          <p><i class="fas fa-map-marker-alt"></i> 15 Avenue Habib Bourguiba, Tunis</p>
+          <p><i class="fas fa-phone"></i> <a href="tel:+21671234567" style="color:inherit">+216 71 234 567</a></p>
+          <p><i class="fas fa-envelope"></i> <a href="mailto:contact@mondelys.tn" style="color:inherit">contact@mondelys.tn</a></p>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2024 Mondélys – Gastronomie du Monde. Tous droits réservés.</p>
+      </div>
+    </footer>
+
+    <script src="main.js"></script>
+    <script src="publicSettings.js"></script>
+
+    <script>
+    /* ════════════════════════════════════════════════════════════
+       REVIEWS — Pagination (6 par page) + Précédent / Suivant
+       sans affichage du compteur "X avis trouvés"
+    ════════════════════════════════════════════════════════════ */
+    (function () {
+
+      const PAGE_SIZE = 6;
+      let allReviews   = [];
+      let filteredList = [];
+      let currentPage  = 0;
+      let activeRating = 0;
+
+      /* ── Helpers ───────────────────────────────────────────── */
+      const starText = n => '★'.repeat(n) + '☆'.repeat(5 - n);
+      const esc = s => String(s)
+        .replace(/&/g,'&amp;').replace(/</g,'&lt;')
+        .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+
+      function avatarSVG(name) {
+        const initials = (name || 'C')
+          .split(' ').map(w => w[0]).slice(0,2).join('').toUpperCase();
+        const hue = [...(name||'')].reduce((a,c) => a + c.charCodeAt(0), 0) % 360;
+        const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 40 40">
+          <circle cx="20" cy="20" r="20" fill="hsl(${hue},35%,55%)"/>
+          <text x="20" y="25" text-anchor="middle" fill="#fff"
+            font-family="Raleway,sans-serif" font-size="14" font-weight="600">${initials}</text>
+        </svg>`;
+        return 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(svg)));
+      }
+
+      function formatDate(d) {
+        if (!d) return '';
+        const dt = new Date(d);
+        return isNaN(dt) ? '' : dt.toLocaleDateString('fr-FR', { day:'numeric', month:'short', year:'numeric' });
+      }
+
+      /* ── Note globale ──────────────────────────────────────── */
+      function updateRatingSummary() {
+        const total = allReviews.length;
+        if (!total) {
+          document.getElementById('avgRating').textContent = '—';
+          document.getElementById('avgStars').textContent  = '☆☆☆☆☆';
+          document.getElementById('avgCount').textContent  = 'Aucun avis pour le moment';
+          for (let i=1;i<=5;i++) {
+            document.getElementById('bar'+i).style.width  = '0%';
+            document.getElementById('pct'+i).textContent  = '0%';
+          }
+          return;
+        }
+        const avg = allReviews.reduce((s,r) => s + r.rating, 0) / total;
+        document.getElementById('avgRating').textContent = avg.toFixed(1);
+        document.getElementById('avgStars').textContent  = '★'.repeat(Math.round(avg)) + '☆'.repeat(5-Math.round(avg));
+        document.getElementById('avgCount').textContent  = 'Basé sur ' + total + ' avis clients';
+        [5,4,3,2,1].forEach(star => {
+          const cnt = allReviews.filter(r => r.rating === star).length;
+          const pct = Math.round(cnt/total*100);
+          document.getElementById('bar'+star).style.width = pct + '%';
+          document.getElementById('pct'+star).textContent  = pct + '%';
+        });
+      }
+
+      /* ── Compteurs filtres ─────────────────────────────────── */
+      function updateFilterCounts() {
+        document.getElementById('countAll').textContent = allReviews.length;
+        document.getElementById('count5').textContent  = allReviews.filter(r=>r.rating===5).length;
+        document.getElementById('count4').textContent  = allReviews.filter(r=>r.rating===4).length;
+        document.getElementById('count3').textContent  = allReviews.filter(r=>r.rating===3).length;
+        document.getElementById('count2').textContent  = allReviews.filter(r=>r.rating<=2).length;
+      }
+
+      /* ── Appliquer le filtre et réinitialiser la page ──────── */
+      function applyFilterAndResetPage() {
+        if (activeRating === 2)     filteredList = allReviews.filter(r => r.rating <= 2);
+        else if (activeRating > 0)  filteredList = allReviews.filter(r => r.rating === activeRating);
+        else                        filteredList = [...allReviews];
+        currentPage = 0;
+      }
+
+      /* ── Rendu de la grille (page courante) ─────────────────── */
+      function render() {
+        const totalItems = filteredList.length;
+        const totalPages = Math.ceil(totalItems / PAGE_SIZE);
+        const start = currentPage * PAGE_SIZE;
+        const pageItems = filteredList.slice(start, start + PAGE_SIZE);
+
+        const grid = document.getElementById('filteredReviewsGrid');
+        if (!totalItems) {
+          grid.innerHTML = `<div class="reviews-empty">
+            <i class="fas fa-comment-slash"></i>
+            Aucun avis pour cette sélection.<br>Essayez de modifier vos filtres.
+          </div>`;
+          document.getElementById('reviewsPagination').style.display = 'none';
+          return;
+        }
+
+        grid.innerHTML = pageItems.map((review, idx) => `
+          <div class="testi-card" style="animation-delay:${idx * 0.05}s">
+            <div class="testi-card-header">
+              <div class="stars">${starText(review.rating)}</div>
+              <span class="testi-card-date">${esc(formatDate(review.date || review.createdAt))}</span>
+            </div>
+            ${review.title ? `<div class="testi-card-title">${esc(review.title)}</div>` : ''}
+            <p class="testi-card-flex-grow">"${esc(review.message)}"</p>
+            <div class="testi-author">
+              <img src="${avatarSVG(review.fullName)}" alt="" width="40" height="40" loading="lazy" />
+              <div>
+                <strong>${esc(review.fullName)}</strong>
+                <span>Client Mondélys</span>
+              </div>
+            </div>
+          </div>
+        `).join('');
+
+        // Gestion de la pagination
+        const paginationDiv = document.getElementById('reviewsPagination');
+        const prevBtn = document.getElementById('prevPageBtn');
+        const nextBtn = document.getElementById('nextPageBtn');
+        const pageIndicator = document.getElementById('pageIndicator');
+
+        if (totalPages <= 1) {
+          paginationDiv.style.display = 'none';
+        } else {
+          paginationDiv.style.display = 'flex';
+          prevBtn.disabled = (currentPage === 0);
+          nextBtn.disabled = (currentPage === totalPages - 1);
+          pageIndicator.textContent = `Page ${currentPage+1} / ${totalPages}`;
+        }
+      }
+
+      /* ── Chargement depuis l'API ───────────────────────────── */
+      async function loadPublicReviews() {
+        try {
+          var res  = await fetch(window.apiUrl('/api/reviews/public'));
+          allReviews = res.ok ? await res.json() : [];
+          if (!Array.isArray(allReviews)) allReviews = [];
+        } catch (_) {
+          allReviews = [];
+        }
+        updateRatingSummary();
+        updateFilterCounts();
+        applyFilterAndResetPage();
+        render();
+      }
+
+      /* ── Pagination : Précédent / Suivant ──────────────────── */
+      document.getElementById('prevPageBtn').addEventListener('click', function() {
+        if (currentPage > 0) {
+          currentPage--;
+          render();
+          document.getElementById('filteredReviewsGrid').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      });
+
+      document.getElementById('nextPageBtn').addEventListener('click', function() {
+        const totalPages = Math.ceil(filteredList.length / PAGE_SIZE);
+        if (currentPage + 1 < totalPages) {
+          currentPage++;
+          render();
+          document.getElementById('filteredReviewsGrid').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      });
+
+      /* ── Filtres ───────────────────────────────────────────── */
+      document.querySelectorAll('.reviews-filter-btn').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+          document.querySelectorAll('.reviews-filter-btn').forEach(function(b) {
+            b.classList.remove('active');
+          });
+          btn.classList.add('active');
+          activeRating = Number(btn.dataset.rating);
+          applyFilterAndResetPage();
+          render();
+        });
+      });
+
+      /* ── Afficher / masquer le formulaire (bouton principal) ── */
+      const showBtn = document.getElementById('showReviewBtnTop');
+      const formWrapper = document.getElementById('reviewFormWrapper');
+      const cancelBtn = document.getElementById('cancelReviewBtn');
+
+      showBtn.addEventListener('click', function() {
+        formWrapper.style.display = 'block';
+        showBtn.style.display = 'none'; // cache le bouton principal pendant que le formulaire est ouvert
+        document.getElementById('reviewName').focus();
+      });
+
+      cancelBtn.addEventListener('click', function() {
+        formWrapper.style.display = 'none';
+        showBtn.style.display = 'inline-flex';
+        document.getElementById('reviewForm').reset();
+        // Réinitialiser les éventuels messages d'erreur
+        const msgDiv = document.getElementById('reviewMsg');
+        if (msgDiv) msgDiv.style.display = 'none';
+      });
+
+      /* ── Soumission ────────────────────────────────────────── */
+      document.getElementById('reviewForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+
+        if (!document.getElementById('reviewConsent').checked) {
+          alert('Veuillez accepter la politique de confidentialité pour publier votre avis.');
+          return;
+        }
+
+        var btn = e.target.querySelector('button[type="submit"]');
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin" style="margin-right:8px"></i>Publication…';
+
+        var payload = {
+          fullName: document.getElementById('reviewName').value.trim(),
+          email:    document.getElementById('reviewEmail').value.trim(),
+          rating:   Number(document.getElementById('reviewRating').value),
+          title:    document.getElementById('reviewTitle').value.trim(),
+          message:  document.getElementById('reviewMessage').value.trim(),
+        };
+
+        try {
+          var res = await fetch(window.apiUrl('/api/reviews'), {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload),
+          });
+          if (!res.ok) {
+            var body = await res.json().catch(function(){ return {}; });
+            throw new Error(body.message || 'Erreur lors de la publication');
+          }
+          e.target.reset();
+          formWrapper.style.display = 'none';
+          showBtn.style.display = 'inline-flex';
+          await loadPublicReviews();
+          alert('Merci ! Votre avis a été publié.');
+        } catch (err) {
+          alert(err.message || 'Erreur serveur. Veuillez réessayer.');
+        } finally {
+          btn.disabled = false;
+          btn.innerHTML = '<i class="fas fa-paper-plane" style="margin-right:8px"></i>Publier mon avis';
+        }
+      });
+
+      loadPublicReviews();
+
+    })();
+    </script>
+  </body>
+</html>

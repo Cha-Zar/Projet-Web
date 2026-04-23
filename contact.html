@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Contact – Mondélys</title>
+  <link rel="stylesheet" href="style.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Lora:ital,wght@0,400;0,500;1,400&family=Raleway:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+
+  <style>
+    /* ─── CSS RESTENT EN PLACE (inchangés) ─── */
+
+    #navbar {
+      transition: background 0.4s ease, box-shadow 0.4s ease, padding 0.3s ease;
+    }
+    #navbar.scrolled { box-shadow: 0 4px 32px rgba(0,0,0,0.18); }
+
+    .nav-links a { position: relative; transition: color 0.25s ease; }
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      left: 0; bottom: -3px;
+      width: 0; height: 1.5px;
+      background: currentColor;
+      transition: width 0.3s cubic-bezier(.4,0,.2,1);
+    }
+    .nav-links a:hover::after,
+    .nav-links a.active::after { width: 100%; }
+
+    .nav-cta { transition: transform 0.22s ease, box-shadow 0.22s ease, background 0.22s ease; }
+    .nav-cta:hover { transform: translateY(-2px); box-shadow: 0 6px 24px rgba(0,0,0,0.22); }
+
+    .page-header-content {
+      animation: headerReveal 0.9s cubic-bezier(.22,1,.36,1) 0.2s both;
+    }
+    @keyframes headerReveal {
+      from { opacity: 0; transform: translateY(32px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ─── SCROLL REVEAL ─── */
+    .reveal {
+      opacity: 0; transform: translateY(40px);
+      transition: opacity 0.75s cubic-bezier(0.22, 1, 0.36, 1), transform 0.75s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+    .reveal-left {
+      opacity: 0; transform: translateX(-40px);
+      transition: opacity 0.8s cubic-bezier(0.22, 1, 0.36, 1), transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .reveal-left.visible { opacity: 1; transform: translateX(0); }
+    .reveal-right {
+      opacity: 0; transform: translateX(40px);
+      transition: opacity 0.8s cubic-bezier(0.22, 1, 0.36, 1), transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .reveal-right.visible { opacity: 1; transform: translateX(0); }
+
+    /* ─── CONTACT ITEM HOVER ─── */
+    .contact-item {
+      position: relative;
+      transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1), background 0.3s ease, box-shadow 0.35s ease;
+      cursor: default; overflow: hidden;
+    }
+    .contact-item::before {
+      content: '';
+      position: absolute;
+      left: 0; top: 0;
+      width: 3px; height: 0;
+      background: var(--gold, #c9a84c);
+      transition: height 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .contact-item:hover { transform: translateX(6px); background: rgba(201,168,76,0.04); box-shadow: -6px 0 24px rgba(201,168,76,0.1); }
+    .contact-item:hover::before { height: 100%; }
+
+    .contact-icon { transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), background 0.3s ease; }
+    .contact-item:hover .contact-icon { transform: scale(1.15) rotate(-5deg); background: rgba(201,168,76,0.15); }
+
+    /* ─── FORM EFFECTS ─── */
+    .form-group { position: relative; }
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.25s ease;
+    }
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 20px rgba(201,168,76,0.15), 0 0 0 2px rgba(201,168,76,0.2);
+      outline: none;
+    }
+    .form-group label { transition: color 0.25s ease; }
+    .form-group:focus-within label { color: var(--gold, #c9a84c); }
+
+    /* ─── BUTTON ─── */
+    .btn-gold {
+      position: relative; overflow: hidden;
+      transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease, letter-spacing 0.3s ease;
+    }
+    .btn-gold::after {
+      content: '';
+      position: absolute; inset: 0;
+      background: rgba(255,255,255,0.12);
+      transform: translateX(-101%);
+      transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .btn-gold:hover::after { transform: translateX(0); }
+    .btn-gold:hover { transform: translateY(-2px) scale(1.02); box-shadow: 0 8px 32px rgba(201,168,76,0.35); letter-spacing: 1.5px; }
+    .btn-gold:active { transform: translateY(0) scale(0.98); }
+
+    /* ─── FAQ ENHANCED ─── */
+    .faq-item {
+      transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.3s ease;
+    }
+    .faq-item:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(0,0,0,0.08); }
+    .faq-question {
+      transition: color 0.25s ease, letter-spacing 0.25s ease;
+      cursor: pointer;
+    }
+    .faq-item.open .faq-question { color: var(--gold, #c9a84c); }
+    .faq-question i { transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); }
+    .faq-item.open .faq-question i { transform: rotate(180deg); }
+    .faq-answer {
+      overflow: hidden;
+      max-height: 0;
+      opacity: 0;
+      transition: max-height 0.5s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.4s ease 0.05s, padding 0.4s ease;
+    }
+    .faq-item.open .faq-answer { max-height: 300px; opacity: 1; }
+
+    /* ─── CONTACT FORM PANEL ─── */
+    .contact-form { transition: box-shadow 0.4s ease; }
+    .contact-form:hover { box-shadow: 0 20px 60px rgba(0,0,0,0.12), 0 0 0 1px rgba(201,168,76,0.1); }
+
+    /* ─── SUCCESS MESSAGE ─── */
+    .success-msg {
+      animation: successPop 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+    }
+    @keyframes successPop {
+      0%   { opacity: 0; transform: scale(0.85) translateY(20px); }
+      100% { opacity: 1; transform: scale(1) translateY(0); }
+    }
+
+    /* ─── PARTICLES ─── */
+    .particle {
+      position: absolute;
+      border-radius: 50%;
+      background: rgba(201,168,76,0.6);
+      pointer-events: none;
+      animation: floatParticle var(--dur, 6s) var(--delay, 0s) ease-in-out infinite;
+      opacity: 0;
+    }
+    @keyframes floatParticle {
+      0%   { opacity: 0; transform: translate(0, 0) scale(0); }
+      10%  { opacity: 0.8; transform: translate(0, 0) scale(1); }
+      90%  { opacity: 0.4; }
+      100% { opacity: 0; transform: translate(var(--tx, 30px), -120px) scale(0.3); }
+    }
+
+    /* ─── SCROLL PROGRESS ─── */
+    .scroll-progress {
+      position: fixed; top: 0; left: 0;
+      height: 2px;
+      background: linear-gradient(90deg, var(--gold, #c9a84c), #f0d080);
+      width: 0%; z-index: 10000;
+      transition: width 0.1s linear;
+      box-shadow: 0 0 8px rgba(201,168,76,0.5);
+    }
+
+    /* ─── PAGE EXIT ─── */
+    body.page-exit {
+      animation: pageExit 0.5s cubic-bezier(0.76, 0, 0.24, 1) forwards;
+    }
+    @keyframes pageExit {
+      0%   { opacity: 1; transform: translateY(0); }
+      100% { opacity: 0; transform: translateY(-20px); }
+    }
+
+    /* ─── SOCIAL ICONS HOVER ─── */
+    .socials a {
+      transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), border-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease !important;
+    }
+    .socials a:hover { transform: translateY(-4px) scale(1.1) !important; box-shadow: 0 6px 20px rgba(201,168,76,0.25); }
+
+    /* ─── MAP PLACEHOLDER ─── */
+    .map-placeholder { transition: box-shadow 0.3s ease, transform 0.3s ease; }
+    .map-placeholder:hover { box-shadow: 0 8px 30px rgba(201,168,76,0.12); transform: translateY(-2px); }
+
+    /* ─── CHECKBOX CUSTOM ─── */
+    #cCo {
+      appearance: none; -webkit-appearance: none;
+      width: 18px !important; height: 18px;
+      border: 1.5px solid rgba(201,168,76,0.4);
+      border-radius: 3px; background: transparent;
+      cursor: pointer; position: relative; flex-shrink: 0;
+      transition: border-color 0.25s ease, background 0.25s ease;
+    }
+    #cCo:checked { background: var(--gold, #c9a84c); border-color: var(--gold, #c9a84c); }
+    #cCo:checked::after {
+      content: '✓';
+      position: absolute; top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      color: white; font-size: 11px; font-weight: bold;
+      animation: checkPop 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    @keyframes checkPop {
+      0%   { transform: translate(-50%, -50%) scale(0); }
+      100% { transform: translate(-50%, -50%) scale(1); }
+    }
+
+    /* ─── FAQ STAGGER ─── */
+    .faq-item:nth-child(1) { transition-delay: 0.05s; }
+    .faq-item:nth-child(2) { transition-delay: 0.12s; }
+    .faq-item:nth-child(3) { transition-delay: 0.19s; }
+    .faq-item:nth-child(4) { transition-delay: 0.26s; }
+    .faq-item:nth-child(5) { transition-delay: 0.33s; }
+    .faq-item:nth-child(6) { transition-delay: 0.40s; }
+
+    /* ─── FLOATING BUTTON ─── */
+    .float-badge {
+      position: fixed;
+      bottom: 2rem; right: 2rem;
+      z-index: 999;
+      width: 76px; height: 76px;
+      border-radius: 50%;
+      background: var(--gold, #c9a84c);
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      box-shadow: 0 8px 30px rgba(201,168,76,.5);
+      text-decoration: none;
+      transition: transform 0.2s;
+      animation: float-pulse 3s ease-in-out infinite;
+    }
+    .float-badge:hover { transform: scale(1.1); }
+    .float-badge i { color: #1a1208; font-size: 1.35rem; }
+    .float-badge span {
+      font-family: var(--ff-ui,'Raleway',sans-serif);
+      font-size: 8.5px; font-weight: 700;
+      letter-spacing: .1em; text-transform: uppercase;
+      color: #1a1208; margin-top: 3px;
+    }
+    @keyframes float-pulse {
+      0%,100% { box-shadow: 0 8px 30px rgba(171,142,64,.5); }
+      50%      { box-shadow: 0 8px 40px rgba(201,168,76,.8), 0 0 0 12px rgba(201,168,76,.07); }
+    }
+  </style>
+</head>
+<body>
+
+<div class="scroll-progress" id="scrollProgress"></div>
+
+<a href="reservation.html" class="float-badge" title="Réserver une table">
+  <i class="fas fa-utensils"></i>
+  <span>Réserver</span>
+</a>
+
+<nav class="navbar" id="navbar">
+  <div class="nav-logo">
+    <span class="logo-emblem">☽</span>
+    <div class="logo-text-wrap">
+      <span class="logo-main">Mondélys</span>
+      <span class="logo-sub">Gastronomie du Monde</span>
+    </div>
+  </div>
+  <ul class="nav-links" id="navLinks">
+    <li><a href="index.html">Accueil</a></li>
+    <li><a href="menu.html">Menu</a></li>
+    <li><a href="reservation.html">Réservation</a></li>
+    <li><a href="contact.html" class="active">Contact</a></li>
+  </ul>
+  <div class="hamburger" id="hamburger"><span></span><span></span><span></span></div>
+</nav>
+
+<div class="page-header" id="pageHeader">
+  <div class="page-header-bg" style="background-image: url('https://images.unsplash.com/photo-1559339352-11d035aa65de?w=1400&q=80');"></div>
+  <div class="page-header-overlay"></div>
+  <div class="page-header-content">
+    <p class="section-label light">Nous Contacter</p>
+    <h1><em style="color: var(--gold-light); font-style: italic; font-family: var(--ff-body);">Parlons-nous</em></h1>
+    <p>Notre équipe est à votre écoute, toujours avec le sourire</p>
+  </div>
+</div>
+
+<section class="contact-section">
+  <div class="container">
+    <div class="contact-grid">
+
+      <div class="contact-info reveal-left">
+        <p class="section-label">Coordonnées</p>
+        <h2>Toujours à votre <em style="color: var(--gold)">Service</em></h2>
+        <p>Pour toute question — notre équipe vous répond dans les 24h.</p>
+        <div class="contact-details">
+          <div class="contact-item reveal" style="transition-delay:0.1s">
+            <div class="contact-icon"><i class="fas fa-map-marker-alt"></i></div>
+            <div class="contact-item-text">
+              <strong>Adresse</strong>
+              <p>15 Avenue Habib Bourguiba<br/>1000 Tunis, Tunisie</p>
+            </div>
+          </div>
+          <div class="contact-item reveal" style="transition-delay:0.2s">
+            <div class="contact-icon"><i class="fas fa-phone-alt"></i></div>
+            <div class="contact-item-text">
+              <strong>Téléphone & WhatsApp</strong>
+              <p><a href="tel:+21671234567" style="color: inherit">+216 71 234 567</a><br/>Mar–Dim · 10h00 – 23h00</p>
+            </div>
+          </div>
+          <div class="contact-item reveal" style="transition-delay:0.3s">
+            <div class="contact-icon"><i class="fas fa-envelope"></i></div>
+            <div class="contact-item-text">
+              <strong>Email</strong>
+              <p><a href="mailto:contact@mondelys.tn" style="color: inherit">contact@mondelys.tn</a><br/>Réponse sous 24h</p>
+            </div>
+          </div>
+          <div class="contact-item reveal" style="transition-delay:0.4s">
+            <div class="contact-icon"><i class="fas fa-clock"></i></div>
+            <div class="contact-item-text">
+              <strong>Horaires d'Ouverture</strong>
+              <p>Mar–Ven : 12h–15h / 19h–23h<br/>Sam–Dim : 12h–16h / 19h–23h30<br/>Lundi : Fermé</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="map-placeholder reveal" style="
+          width: 100%; height: 220px;
+          background: var(--ivory2);
+          border: 1px solid var(--ivory3);
+          display: flex; flex-direction: column;
+          align-items: center; justify-content: center;
+          gap: 1rem; margin-bottom: 2rem;
+          transition-delay: 0.5s;
+        ">
+          <i class="fas fa-map-marker-alt" style="font-size: 2rem; color: var(--gold)"></i>
+          <span style="font-family: var(--ff-ui); font-size: 0.8rem; letter-spacing: 1px; color: var(--text-light);">Avenue Habib Bourguiba, Tunis</span>
+          <a href="https://maps.google.com" target="_blank" class="btn btn-gold" style="font-size: 0.7rem; padding: 10px 20px">Voir sur Google Maps</a>
+        </div>
+
+        <h4 class="reveal" style="font-family: var(--ff-display); margin-bottom: 1rem; letter-spacing: 2px; transition-delay:0.55s">Suivez-nous</h4>
+        <div class="socials reveal" style="justify-content: flex-start; transition-delay:0.6s">
+          <a href="#" style="border-color: rgba(0,0,0,0.12); color: var(--text-light)"><i class="fab fa-facebook-f"></i></a>
+          <a href="#" style="border-color: rgba(0,0,0,0.12); color: var(--text-light)"><i class="fab fa-instagram"></i></a>
+          <a href="#" style="border-color: rgba(0,0,0,0.12); color: var(--text-light)"><i class="fab fa-whatsapp"></i></a>
+        </div>
+      </div>
+
+      <div class="contact-form reveal-right">
+        <h3>✦ Envoyer un Message</h3>
+
+        <!-- novalidate → Validator gère tout -->
+        <form id="contactForm" novalidate>
+          <div class="form-row reveal" style="transition-delay:0.1s">
+            <div class="form-group">
+              <label for="cFn">Prénom <span style="color: var(--gold)">*</span></label>
+              <input type="text" id="cFn" placeholder="Alessandro" required/>
+            </div>
+            <div class="form-group">
+              <label for="cLn">Nom <span style="color: var(--gold)">*</span></label>
+              <input type="text" id="cLn" placeholder="Ferrara" required/>
+            </div>
+          </div>
+          <div class="form-row reveal" style="transition-delay:0.18s">
+            <div class="form-group">
+              <label for="cEm">Email <span style="color: var(--gold)">*</span></label>
+              <input type="email" id="cEm" placeholder="votre@email.com" required/>
+            </div>
+            <div class="form-group">
+              <label for="cPh">Téléphone</label>
+              <input type="tel" id="cPh" placeholder="+216 71 000 000"/>
+            </div>
+          </div>
+          <div class="form-group reveal" style="margin-bottom: 1.5rem; transition-delay:0.26s">
+            <label for="cSu">Sujet <span style="color: var(--gold)">*</span></label>
+            <select id="cSu" required>
+              <option value="">Choisir un sujet...</option>
+              <option>Réservation de table</option>
+              <option>Événement privé / Mariage</option>
+              <option>Menu Dégustation 7 Plats</option>
+              <option>Menu & Allergies alimentaires</option>
+              <option>Partenariat professionnel</option>
+              <option>Presse & Médias</option>
+              <option>Feedback & Suggestions</option>
+              <option>Autre</option>
+            </select>
+          </div>
+          <div class="form-group reveal" style="margin-bottom: 1.5rem; transition-delay:0.34s">
+            <label for="cMs">Message <span style="color: var(--gold)">*</span></label>
+            <textarea id="cMs" style="height: 140px" placeholder="Décrivez votre demande..." required></textarea>
+          </div>
+          <div class="form-group reveal" style="flex-direction: row; align-items: flex-start; gap: 0.75rem; margin-bottom: 1.5rem; transition-delay:0.42s">
+            <input type="checkbox" id="cCo" style="width: auto; margin-top: 4px;" required/>
+            <label for="cCo" style="text-transform: none; letter-spacing: 0; font-size: 0.9rem; font-family: var(--ff-body); cursor: pointer;">
+              J'accepte que mes données soient utilisées pour traiter ma demande.
+            </label>
+          </div>
+          <div class="form-submit reveal" style="transition-delay:0.5s">
+            <button type="submit" class="btn btn-gold" style="min-width: 200px">
+              <i class="fas fa-paper-plane" style="margin-right: 8px"></i>Envoyer
+            </button>
+          </div>
+        </form>
+
+        <!-- Message de succès -->
+        <div class="success-msg" id="contactSuccess" style="display:none">
+          <i class="fas fa-check-circle" style="font-size: 2rem; display: block; margin-bottom: 0.75rem"></i>
+          <strong style="display: block; font-family: var(--ff-display); font-size: 1.1rem; margin-bottom: 0.5rem;">Message Envoyé ! ✦</strong>
+          Notre équipe vous répondra dans les 24 heures. Merci de votre confiance !
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="section" style="background: var(--ivory2)">
+  <div class="container" style="max-width: 780px">
+    <p class="section-label center reveal">FAQ</p>
+    <h2 class="section-title center reveal" style="transition-delay:0.1s">Questions <em>Fréquentes</em></h2>
+    <div style="margin-top: 3rem">
+      <div class="faq-item reveal">
+        <div class="faq-question">Comment fonctionne le menu dégustation ? <i class="fas fa-chevron-down"></i></div>
+        <div class="faq-answer"><p>Notre menu dégustation 7 plats (480 TND/personne) est un tour du monde culinaire. Une réservation 48h à l'avance est obligatoire pour 2 personnes minimum.</p></div>
+      </div>
+      <div class="faq-item reveal">
+        <div class="faq-question">Gérez-vous les allergies alimentaires ? <i class="fas fa-chevron-down"></i></div>
+        <div class="faq-answer"><p>Oui, absolument. Notre équipe gère toutes les allergies courantes. Signalez votre allergie lors de la réservation ou à votre arrivée.</p></div>
+      </div>
+      <div class="faq-item reveal">
+        <div class="faq-question">Proposez-vous des options végétariennes ? <i class="fas fa-chevron-down"></i></div>
+        <div class="faq-answer"><p>Oui. Chaque cuisine représentée chez Mondélys propose des options végétariennes et végétaliennes. Mentionnez votre préférence lors de la réservation.</p></div>
+      </div>
+      <div class="faq-item reveal">
+        <div class="faq-question">Pouvez-vous organiser des événements privés ? <i class="fas fa-chevron-down"></i></div>
+        <div class="faq-answer"><p>Absolument. Nous disposons d'un salon privé pour 8 à 25 personnes. Contactez events@mondelys.tn pour un devis personnalisé.</p></div>
+      </div>
+      <div class="faq-item reveal">
+        <div class="faq-question">D'où proviennent vos ingrédients ? <i class="fas fa-chevron-down"></i></div>
+        <div class="faq-answer"><p>Nous importons des ingrédients d'origine certifiés : wagyu du Japon, truffes du Périgord, épices du Kerala. Les produits frais locaux viennent du marché de Tunis.</p></div>
+      </div>
+      <div class="faq-item reveal">
+        <div class="faq-question">Y a-t-il un code vestimentaire ? <i class="fas fa-chevron-down"></i></div>
+        <div class="faq-answer"><p>Nous recommandons une tenue élégante ou smart casual. Pas de short ni de tongs en soirée.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="footer-top-pattern"></div>
+  <div class="container footer-grid">
+    <div class="footer-brand">
+      <div class="nav-logo" style="margin-bottom: 1rem">
+        <span class="logo-emblem">✦</span>
+        <div class="logo-text-wrap">
+          <span class="logo-main">Mondélys</span>
+          <span class="logo-sub" style="color: rgba(255,255,255,0.4)">Gastronomie du Monde</span>
+        </div>
+      </div>
+      <p>Le monde dans votre assiette — Tunis, Tunisie.</p>
+      <div class="socials">
+        <a href="#"><i class="fab fa-facebook-f"></i></a>
+        <a href="#"><i class="fab fa-instagram"></i></a>
+        <a href="#"><i class="fab fa-whatsapp"></i></a>
+      </div>
+    </div>
+    <div class="footer-links">
+      <h4>Navigation</h4>
+      <ul>
+        <li><a href="index.html">Accueil</a></li>
+        <li><a href="menu.html">Menu</a></li>
+        <li><a href="reservation.html">Réservation</a></li>
+        <li><a href="contact.html">Contact</a></li>
+      </ul>
+    </div>
+    <div class="footer-hours">
+      <h4>Horaires</h4>
+      <p>Mardi – Vendredi<br/><strong>12h00 – 15h00 · 19h00 – 23h00</strong></p>
+      <p>Samedi – Dimanche<br/><strong>12h00 – 16h00 · 19h00 – 23h30</strong></p>
+      <p>Lundi : <strong>Fermé</strong></p>
+    </div>
+    <div class="footer-contact">
+      <h4>Contact</h4>
+      <p><i class="fas fa-map-marker-alt"></i> 15 Avenue Habib Bourguiba, Tunis</p>
+      <p><i class="fas fa-phone"></i> +216 71 234 567</p>
+      <p><i class="fas fa-envelope"></i> contact@mondelys.tn</p>
+    </div>
+  </div>
+  <div class="footer-bottom"><p>&copy; 2024 Mondélys – Gastronomie du Monde. Tous droits réservés.</p></div>
+</footer>
+
+<script src="main.js"></script>
+<script src="publicSettings.js"></script>
+<!-- Utilitaires partagés : Toast, Validator, Skeleton, LazyImage -->
+<script src="mondelys-utils.js"></script>
+
+<script>
+  /* ─── PAGE LOAD ─── */
+  window.addEventListener('load', () => {
+    document.getElementById('pageHeader').classList.add('loaded');
+    spawnParticles();
+  });
+
+  function spawnParticles() {
+    const header = document.getElementById('pageHeader');
+    for (let i = 0; i < 18; i++) {
+      const p = document.createElement('div');
+      p.className = 'particle';
+      p.style.cssText = `
+        left:${Math.random()*100}%;
+        bottom:${Math.random()*40}%;
+        --dur:${4+Math.random()*5}s;
+        --delay:${Math.random()*6}s;
+        --tx:${(Math.random()-0.5)*80}px;
+        width:${2+Math.random()*4}px;
+        height:${2+Math.random()*4}px;
+      `;
+      header.appendChild(p);
+    }
+  }
+
+  /* ─── SCROLL REVEAL ─── */
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+  document.querySelectorAll('.reveal, .reveal-left, .reveal-right').forEach(el => observer.observe(el));
+
+  /* ─── SCROLL PROGRESS ─── */
+  window.addEventListener('scroll', () => {
+    const pct = (window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * 100;
+    document.getElementById('scrollProgress').style.width = pct + '%';
+  }, { passive: true });
+
+  /* ─── PAGE EXIT ─── */
+  document.querySelectorAll('a[href]').forEach(link => {
+    const href = link.getAttribute('href');
+    if (!href || href.startsWith('#') || href.startsWith('http') || href.startsWith('mailto') || href.startsWith('tel')) return;
+    link.addEventListener('click', (e) => {
+      e.preventDefault();
+      document.body.classList.add('page-exit');
+      setTimeout(() => { window.location = href; }, 420);
+    });
+  });
+
+  /* ─── FAQ ACCORDION ─── */
+  document.querySelectorAll('.faq-question').forEach(q => {
+    q.addEventListener('click', () => {
+      const item = q.parentElement;
+      const wasOpen = item.classList.contains('open');
+      document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
+      if (!wasOpen) item.classList.add('open');
+    });
+  });
+
+  /* ──────────────────────────────────────────────────────────────
+     VALIDATION TEMPS-RÉEL — Formulaire de contact
+     Règles :
+       - cFn  : required (prénom)
+       - cLn  : required (nom)
+       - cEm  : required + format email
+       - cPh  : optionnel, mais validé si rempli
+       - cSu  : select (sujet non vide)
+       - cMs  : required + min 10 caractères
+  ────────────────────────────────────────────────────────────────── */
+  const contactForm = document.getElementById('contactForm');
+  const contactRules = {
+    cFn: ['required'],
+    cLn: ['required'],
+    cEm: ['required', 'email'],
+    cPh: ['phone'],   /* optionnel mais validé si rempli */
+    cSu: ['select'],
+    cMs: ['required', Validator.rules.minLen(10)],
+  };
+
+  /* Attache la validation temps-réel */
+  Validator.attach(contactForm, contactRules);
+
+  /* ─── SOUMISSION ─── */
+  document.getElementById('contactForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    /* Validation globale avant envoi */
+    if (!Validator.isFormValid(contactForm, contactRules)) {
+      Toast.show('Veuillez corriger les champs en rouge.', 'error');
+      return;
+    }
+    if (!document.getElementById('cCo').checked) {
+      Toast.show('Veuillez accepter notre politique de confidentialité.', 'warning');
+      return;
+    }
+
+    const btn = e.target.querySelector('[type="submit"]');
+    const originalHTML = btn.innerHTML;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin" style="margin-right:8px"></i>Envoi...';
+    btn.disabled = true;
+
+    try {
+      const response = await fetch(window.apiUrl('/api/contact-messages'), {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          firstName: document.getElementById('cFn').value.trim(),
+          lastName:  document.getElementById('cLn').value.trim(),
+          email:     document.getElementById('cEm').value.trim(),
+          phone:     document.getElementById('cPh').value.trim(),
+          subject:   document.getElementById('cSu').value.trim(),
+          message:   document.getElementById('cMs').value.trim(),
+        }),
+      });
+
+      if (!response.ok) {
+        const body = await response.json().catch(() => ({}));
+        throw new Error(body.message || 'Erreur lors de l\'envoi du message');
+      }
+
+      /* Succès : affiche le bloc de confirmation + Toast */
+      document.getElementById('contactForm').style.display = 'none';
+      document.getElementById('contactSuccess').style.display = 'block';
+      Toast.show('Message envoyé ! Nous vous répondons dans les 24h.', 'success', 6000);
+
+    } catch (error) {
+      /* Toast erreur (remplace le alert d'origine) */
+      Toast.show(error.message || 'Erreur serveur. Veuillez réessayer.', 'error');
+      btn.innerHTML = originalHTML;
+      btn.disabled = false;
+    }
+  });
+</script>
+</body>
+</html>

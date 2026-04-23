@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Mondélys – Messages</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Lora:ital,wght@0,400;0,500;1,400&family=Raleway:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+  <link rel="stylesheet" href="styleAdmin.css"/>
+</head>
+<body>
+
+<!-- ===== SIDEBAR ===== -->
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-brand">
+    <span class="logo-emblem">☽</span>
+    <div class="logo-text">
+      <span class="logo-main">Mondélys</span>
+      <span class="logo-sub">Espace Admin</span>
+    </div>
+  </div>
+  <div class="sidebar-role">Responsable Restaurant</div>
+  <nav class="sidebar-nav">
+    <div class="nav-section-label">Principal</div>
+    <a href="DashboradAdmin.html"    data-page="DashboradAdmin.html">    <i class="fas fa-chart-line"></i>    Tableau de Bord</a>
+    <a href="resAdmin.html" data-page="resAdmin.html"> <i class="fas fa-calendar-check"></i> Réservations <span class="badge" style="display:none;"></span></a>
+    <a href="reviwAdmin.html"      data-page="reviwAdmin.html">      <i class="fas fa-star"></i>           Avis Clients <span class="badge" style="display:none;"></span></a>
+    <div class="nav-section-label">Gestion</div>
+    <a href="contactAdmin.html" class="active" data-page="contactAdmin.html"><i class="fas fa-envelope"></i> Messages <span class="badge" style="display:none;"></span></a>
+    <div class="nav-section-label">Paramètres</div>
+    <a href="settingsAdmin.html"     data-page="settingsAdmin.html">     <i class="fas fa-cog"></i>            Paramètres</a>
+  </nav>
+  <div class="sidebar-footer">
+    <div class="sidebar-avatar">YM</div>
+    <div class="sidebar-user">
+      <strong>Yasmine Mbarki</strong>
+      <span>Chef Responsable</span>
+    </div>
+    <i class="fas fa-sign-out-alt logout-btn" title="Déconnexion"></i>
+  </div>
+</aside>
+
+<!-- ===== MAIN ===== -->
+<main class="main">
+  <div class="topbar">
+    <div style="display:flex;align-items:center;gap:1rem;">
+      <div class="hamburger-admin" id="hamburgerAdmin"><span></span><span></span><span></span></div>
+      <div class="topbar-title">☽ Messages</div>
+    </div>
+    <div class="topbar-right">
+      <span class="topbar-time" id="clock"></span>
+      <div class="topbar-notif" title="Notifications">
+        <i class="fas fa-bell" style="font-size:0.9rem;color:var(--text-light);"></i>
+        <span class="notif-dot"></span>
+      </div>
+      <a href="/" class="btn-sm outline" style="font-size:0.62rem;" target="_blank" rel="noopener noreferrer">
+        <i class="fas fa-external-link-alt" style="margin-right:5px;"></i>Voir le Site
+      </a>
+    </div>
+  </div>
+
+  <div class="content">
+    <div class="section-header">
+      <h2>Messages <em>Reçus</em></h2>
+    </div>
+
+    <div class="table-wrap">
+      <div class="table-toolbar">
+        <div class="search-box">
+          <i class="fas fa-search"></i>
+          <input type="text" placeholder="Rechercher..." id="searchMsg" oninput="filterContacts()"/>
+        </div>
+        <select class="filter-select" id="filterSubject" onchange="filterContacts()">
+          <option value="">Tous sujets</option>
+          <option value="Événement privé">Événement privé</option>
+          <option value="Allergies">Menu &amp; Allergies</option>
+          <option value="Partenariat">Partenariat</option>
+          <option value="Ramadan">Iftar Ramadan</option>
+        </select>
+        <select class="filter-select" id="filterMsgStatus" onchange="filterContacts()">
+          <option value="">Tous</option>
+          <option value="new">Nouveaux</option>
+          <option value="read">Lus</option>
+        </select>
+      </div>
+
+      <div style="overflow-x:auto;">
+        <table>
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Expéditeur</th>
+              <th>Email</th>
+              <th>Sujet</th>
+              <th>Message</th>
+              <th>Statut</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody id="contactBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div><!-- /content -->
+</main>
+
+<!-- ===== MODAL : MESSAGE DETAIL ===== -->
+<div class="modal-overlay" id="modalContact">
+  <div class="modal">
+    <div class="modal-header">
+      <h3>Détail du Message</h3>
+      <button class="modal-close" onclick="closeModal('modalContact')"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="modal-body">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;">
+        <div class="modal-row"><span class="modal-label">Expéditeur</span><span class="modal-val" id="cName">—</span></div>
+        <div class="modal-row"><span class="modal-label">Date</span><span class="modal-val" id="cDate">—</span></div>
+        <div class="modal-row"><span class="modal-label">Email</span><span class="modal-val" id="cEmail">—</span></div>
+        <div class="modal-row"><span class="modal-label">Sujet</span><span class="modal-val" id="cSubject">—</span></div>
+      </div>
+      <div class="modal-row" style="margin-top:0.5rem;">
+        <span class="modal-label">Message complet</span>
+        <p id="cMessage" style="font-family:var(--ff-body);font-size:0.9rem;line-height:1.7;color:var(--text);margin-top:0.5rem;"></p>
+      </div>
+      <div class="modal-row" style="margin-top:1rem;">
+        <span class="modal-label">Votre réponse</span>
+        <textarea class="modal-textarea" id="cResponse" placeholder="Bonjour, merci pour votre message..."></textarea>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-sm outline" onclick="closeModal('modalContact')">Fermer</button>
+      <button class="btn-sm" onclick="sendContactResponse()"><i class="fas fa-save" style="margin-right:5px;"></i>Enregistrer la réponse</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast-container" id="toastContainer"></div>
+
+<script src="adminApi.js"></script>
+<script src="navAdmin.js"></script>
+<script>
+  ensureAdminAuthenticated();
+
+  let contacts = [];
+
+  let filteredContacts = [];
+  let currentContactId = null;
+
+  function formatDate(value) {
+    if (!value) return '—';
+    return new Date(value).toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', year: 'numeric' });
+  }
+
+  function renderContacts(data) {
+    document.getElementById('contactBody').innerHTML = data.map(c => `
+      <tr>
+        <td style="font-size:0.8rem;color:var(--text-light);">${formatDate(c.createdAt)}</td>
+        <td><strong>${c.firstName} ${c.lastName}</strong></td>
+        <td style="font-size:0.82rem;">${c.email}</td>
+        <td style="font-size:0.82rem;">${c.subject}</td>
+        <td style="font-size:0.82rem;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${c.message}</td>
+        <td><span class="status ${c.readByAdmin ? 'status-read' : 'status-new'}">${c.readByAdmin ? 'Lu' : 'Nouveau'}</span></td>
+        <td>
+          <div class="action-btns">
+            <button class="action-btn"         title="Voir"      onclick="openContactModal(${c.id})"><i class="fas fa-eye"></i></button>
+          </div>
+        </td>
+      </tr>
+    `).join('');
+  }
+
+  function filterContacts() {
+    const search  = document.getElementById('searchMsg').value.toLowerCase();
+    const subject = document.getElementById('filterSubject').value;
+    const status  = document.getElementById('filterMsgStatus').value;
+    filteredContacts = contacts.filter(c => {
+      const fullName = `${c.firstName} ${c.lastName}`.toLowerCase();
+      const matchSearch  = !search  || fullName.includes(search) || c.email.toLowerCase().includes(search) || c.message.toLowerCase().includes(search);
+      const matchSubject = !subject || c.subject.toLowerCase().includes(subject.toLowerCase());
+      const matchStatus  = !status  || (status === 'new' ? !c.readByAdmin : c.readByAdmin);
+      return matchSearch && matchSubject && matchStatus;
+    });
+    renderContacts(filteredContacts);
+  }
+
+  async function openContactModal(id) {
+    const c = contacts.find(x => x.id === id);
+    if (!c) return;
+    currentContactId = id;
+
+    if (!c.readByAdmin) {
+      try {
+        await adminFetch(`/api/admin/contact-messages/${id}/read`, { method: 'PATCH' });
+        c.readByAdmin = true;
+      } catch (error) {
+        showToast(error.message || 'Erreur serveur', false);
+      }
+    }
+
+    renderContacts(filteredContacts);
+    document.getElementById('cName').textContent    = `${c.firstName} ${c.lastName}`;
+    document.getElementById('cDate').textContent    = formatDate(c.createdAt);
+    document.getElementById('cEmail').textContent   = c.email;
+    document.getElementById('cSubject').textContent = c.subject;
+    document.getElementById('cMessage').textContent = c.message;
+    document.getElementById('cResponse').value      = c.adminResponse || '';
+    openModal('modalContact');
+  }
+
+  async function sendContactResponse() {
+    const txt = document.getElementById('cResponse').value.trim();
+    if (!txt) { showToast('Veuillez écrire une réponse.', false); return; }
+    const c = contacts.find(x => x.id === currentContactId);
+
+    try {
+      await adminFetch(`/api/admin/contact-messages/${currentContactId}/respond`, {
+        method: 'POST',
+        body: JSON.stringify({ response: txt })
+      });
+
+      closeModal('modalContact');
+      showToast('Réponse enregistrée pour ' + c.email + ' !', true);
+      await loadContacts();
+    } catch (error) {
+      showToast(error.message || 'Erreur serveur', false);
+    }
+  }
+
+  async function loadContacts() {
+    try {
+      contacts = await adminFetch('/api/admin/contact-messages');
+      filterContacts();
+    } catch (error) {
+      showToast(error.message || 'Erreur de chargement', false);
+    }
+  }
+
+  loadContacts();
+</script>
+</body>
+</html>

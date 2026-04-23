@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Mondélys – Tableau de Bord</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Lora:ital,wght@0,400;0,500;1,400&family=Raleway:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+  <link rel="stylesheet" href="styleAdmin.css"/>
+
+  <style>
+    /* ── Skeleton admin : shimmer identique à mondelys-utils ── */
+    .skel-admin {
+      border-radius: 6px;
+      background: linear-gradient(
+        90deg,
+        rgba(201,168,76,0.08) 25%,
+        rgba(201,168,76,0.18) 50%,
+        rgba(201,168,76,0.08) 75%
+      );
+      background-size: 200% 100%;
+      animation: skel-shimmer-admin 1.6s ease-in-out infinite;
+    }
+    @keyframes skel-shimmer-admin {
+      0%   { background-position: 200% 0; }
+      100% { background-position: -200% 0; }
+    }
+
+    /* ── Stat card skeleton ── */
+    .stat-card-skel {
+      background: var(--white, #fff);
+      border-radius: 10px;
+      padding: 1.5rem;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      min-height: 110px;
+    }
+
+    /* ── Activity skeleton row ── */
+    .activity-skel-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 0.65rem 0;
+      border-bottom: 1px solid rgba(201,168,76,0.06);
+    }
+    .activity-skel-dot {
+      width: 10px; height: 10px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .activity-skel-lines {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    /* ── Chart bar skeleton ── */
+    .bar-skel-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      flex: 1;
+    }
+    .bar-skel {
+      width: 28px;
+      border-radius: 4px 4px 0 0;
+    }
+    .bar-label-skel {
+      height: 8px;
+      width: 20px;
+      border-radius: 4px;
+    }
+  </style>
+</head>
+<body>
+
+<!-- ===== SIDEBAR ===== -->
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-brand">
+    <span class="logo-emblem">☽</span>
+    <div class="logo-text">
+      <span class="logo-main">Mondélys</span>
+      <span class="logo-sub">Espace Admin</span>
+    </div>
+  </div>
+  <div class="sidebar-role">Responsable Restaurant</div>
+  <nav class="sidebar-nav">
+    <div class="nav-section-label">Principal</div>
+    <a href="DashboradAdmin.html"     class="active" data-page="DashboradAdmin.html">    <i class="fas fa-chart-line"></i>    Tableau de Bord</a>
+    <a href="resAdmin.html"  data-page="resAdmin.html">                <i class="fas fa-calendar-check"></i> Réservations    <span class="badge" style="display:none;"></span></a>
+    <a href="reviwAdmin.html"       data-page="reviwAdmin.html">                     <i class="fas fa-star"></i>           Avis Clients    <span class="badge" style="display:none;"></span></a>
+    <div class="nav-section-label">Gestion</div>
+    <a href="contactAdmin.html"      data-page="contactAdmin.html">                    <i class="fas fa-envelope"></i>       Messages        <span class="badge" style="display:none;"></span></a>
+    <div class="nav-section-label">Paramètres</div>
+    <a href="settingsAdmin.html"      data-page="settingsAdmin.html">                    <i class="fas fa-cog"></i>            Paramètres</a>
+  </nav>
+  <div class="sidebar-footer">
+    <div class="sidebar-avatar">YM</div>
+    <div class="sidebar-user">
+      <strong>Yasmine Mbarki</strong>
+      <span>Chef Responsable</span>
+    </div>
+    <i class="fas fa-sign-out-alt logout-btn" title="Déconnexion"></i>
+  </div>
+</aside>
+
+<!-- ===== MAIN ===== -->
+<main class="main">
+  <div class="topbar">
+    <div style="display:flex;align-items:center;gap:1rem;">
+      <div class="hamburger-admin" id="hamburgerAdmin"><span></span><span></span><span></span></div>
+      <div class="topbar-title">☽ Tableau de Bord</div>
+    </div>
+    <div class="topbar-right">
+      <span class="topbar-time" id="clock"></span>
+      <div class="topbar-notif" title="Notifications">
+        <i class="fas fa-bell" style="font-size:0.9rem;color:var(--text-light);"></i>
+        <span class="notif-dot"></span>
+      </div>
+      <a href="/" class="btn-sm outline" style="font-size:0.62rem;" target="_blank" rel="noopener noreferrer">
+        <i class="fas fa-external-link-alt" style="margin-right:5px;"></i>Voir le Site
+      </a>
+    </div>
+  </div>
+
+  <div class="content">
+
+    <!-- Stats : skeleton affiché jusqu'au chargement -->
+    <div class="stats-grid" id="statsGrid">
+      <!-- 4 skeleton stat cards -->
+      <div class="stat-card-skel">
+        <div class="skel-admin" style="height:11px;width:60%;"></div>
+        <div class="skel-admin" style="height:36px;width:40%;border-radius:8px;"></div>
+        <div class="skel-admin" style="height:9px;width:50%;"></div>
+      </div>
+      <div class="stat-card-skel">
+        <div class="skel-admin" style="height:11px;width:60%;"></div>
+        <div class="skel-admin" style="height:36px;width:40%;border-radius:8px;"></div>
+        <div class="skel-admin" style="height:9px;width:50%;"></div>
+      </div>
+      <div class="stat-card-skel">
+        <div class="skel-admin" style="height:11px;width:60%;"></div>
+        <div class="skel-admin" style="height:36px;width:40%;border-radius:8px;"></div>
+        <div class="skel-admin" style="height:9px;width:50%;"></div>
+      </div>
+      <div class="stat-card-skel">
+        <div class="skel-admin" style="height:11px;width:60%;"></div>
+        <div class="skel-admin" style="height:36px;width:40%;border-radius:8px;"></div>
+        <div class="skel-admin" style="height:9px;width:50%;"></div>
+      </div>
+    </div>
+
+    <div class="dashboard-grid">
+      <!-- Chart skeleton -->
+      <div class="chart-card" id="chartCard">
+        <div class="chart-title">Réservations – 7 derniers jours</div>
+        <!-- Skeleton chart bars -->
+        <div class="mini-chart" id="miniChart">
+          <div style="display:flex;align-items:flex-end;gap:6px;height:120px;padding-top:10px;">
+            <div class="bar-skel-wrap"><div class="skel-admin bar-skel" style="height:60px;"></div><div class="skel-admin bar-label-skel"></div></div>
+            <div class="bar-skel-wrap"><div class="skel-admin bar-skel" style="height:90px;"></div><div class="skel-admin bar-label-skel"></div></div>
+            <div class="bar-skel-wrap"><div class="skel-admin bar-skel" style="height:50px;"></div><div class="skel-admin bar-label-skel"></div></div>
+            <div class="bar-skel-wrap"><div class="skel-admin bar-skel" style="height:110px;"></div><div class="skel-admin bar-label-skel"></div></div>
+            <div class="bar-skel-wrap"><div class="skel-admin bar-skel" style="height:70px;"></div><div class="skel-admin bar-label-skel"></div></div>
+            <div class="bar-skel-wrap"><div class="skel-admin bar-skel" style="height:95px;"></div><div class="skel-admin bar-label-skel"></div></div>
+            <div class="bar-skel-wrap"><div class="skel-admin bar-skel" style="height:40px;"></div><div class="skel-admin bar-label-skel"></div></div>
+          </div>
+        </div>
+        <div style="display:flex;gap:1rem;margin-top:1.5rem;flex-wrap:wrap;">
+          <div style="font-size:0.72rem;color:var(--text-light);">Total système : <strong style="color:var(--night);" id="statTotal">—</strong></div>
+        </div>
+      </div>
+
+      <!-- Activity skeleton -->
+      <div class="chart-card">
+        <div class="chart-title">Activité Récente</div>
+        <div class="activity-list" id="activityList">
+          <!-- 6 skeleton activity rows -->
+          <div class="activity-skel-row"><div class="skel-admin activity-skel-dot"></div><div class="activity-skel-lines"><div class="skel-admin" style="height:11px;width:80%;"></div><div class="skel-admin" style="height:9px;width:40%;"></div></div></div>
+          <div class="activity-skel-row"><div class="skel-admin activity-skel-dot"></div><div class="activity-skel-lines"><div class="skel-admin" style="height:11px;width:65%;"></div><div class="skel-admin" style="height:9px;width:35%;"></div></div></div>
+          <div class="activity-skel-row"><div class="skel-admin activity-skel-dot"></div><div class="activity-skel-lines"><div class="skel-admin" style="height:11px;width:75%;"></div><div class="skel-admin" style="height:9px;width:45%;"></div></div></div>
+          <div class="activity-skel-row"><div class="skel-admin activity-skel-dot"></div><div class="activity-skel-lines"><div class="skel-admin" style="height:11px;width:55%;"></div><div class="skel-admin" style="height:9px;width:30%;"></div></div></div>
+          <div class="activity-skel-row"><div class="skel-admin activity-skel-dot"></div><div class="activity-skel-lines"><div class="skel-admin" style="height:11px;width:70%;"></div><div class="skel-admin" style="height:9px;width:38%;"></div></div></div>
+          <div class="activity-skel-row"><div class="skel-admin activity-skel-dot"></div><div class="activity-skel-lines"><div class="skel-admin" style="height:11px;width:60%;"></div><div class="skel-admin" style="height:9px;width:42%;"></div></div></div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /content -->
+</main>
+
+<div class="toast-container" id="toastContainer"></div>
+
+<script src="adminApi.js"></script>
+<script src="navAdmin.js"></script>
+<script>
+  ensureAdminAuthenticated();
+
+  /* ── Helpers skeleton ── */
+  function showStatsSkeleton() {
+    document.getElementById('statsGrid').innerHTML = `
+      <div class="stat-card-skel"><div class="skel-admin" style="height:11px;width:60%;"></div><div class="skel-admin" style="height:36px;width:40%;border-radius:8px;"></div><div class="skel-admin" style="height:9px;width:50%;"></div></div>
+      <div class="stat-card-skel"><div class="skel-admin" style="height:11px;width:60%;"></div><div class="skel-admin" style="height:36px;width:40%;border-radius:8px;"></div><div class="skel-admin" style="height:9px;width:50%;"></div></div>
+      <div class="stat-card-skel"><div class="skel-admin" style="height:11px;width:60%;"></div><div class="skel-admin" style="height:36px;width:40%;border-radius:8px;"></div><div class="skel-admin" style="height:9px;width:50%;"></div></div>
+      <div class="stat-card-skel"><div class="skel-admin" style="height:11px;width:60%;"></div><div class="skel-admin" style="height:36px;width:40%;border-radius:8px;"></div><div class="skel-admin" style="height:9px;width:50%;"></div></div>
+    `;
+  }
+
+  function showActivitySkeleton() {
+    document.getElementById('activityList').innerHTML = [80,65,75,55,70,60].map(w => `
+      <div class="activity-skel-row">
+        <div class="skel-admin activity-skel-dot"></div>
+        <div class="activity-skel-lines">
+          <div class="skel-admin" style="height:11px;width:${w}%;"></div>
+          <div class="skel-admin" style="height:9px;width:${Math.round(w*0.5)}%;"></div>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  function showChartSkeleton() {
+    const heights = [60,90,50,110,70,95,40];
+    document.getElementById('miniChart').innerHTML = `
+      <div style="display:flex;align-items:flex-end;gap:6px;height:120px;padding-top:10px;">
+        ${heights.map(h => `
+          <div class="bar-skel-wrap">
+            <div class="skel-admin bar-skel" style="height:${h}px;"></div>
+            <div class="skel-admin bar-label-skel"></div>
+          </div>
+        `).join('')}
+      </div>`;
+  }
+
+  /* ── Render real stat cards ── */
+  function renderStatCards(stats) {
+    document.getElementById('statsGrid').innerHTML = `
+      <div class="stat-card">
+        <div class="stat-label">Réservations aujourd'hui</div>
+        <div class="stat-val" id="statToday">${stats.reservationsToday}</div>
+        <div class="stat-sub up"><i class="fas fa-arrow-up"></i> Mise à jour en temps réel</div>
+        <i class="fas fa-calendar-check stat-icon"></i>
+      </div>
+      <div class="stat-card olive">
+        <div class="stat-label">Réservations en attente</div>
+        <div class="stat-val" id="statPending">${stats.pendingReservations}</div>
+        <div class="stat-sub up"><i class="fas fa-hourglass-half"></i> À vérifier</div>
+        <i class="fas fa-users stat-icon"></i>
+      </div>
+      <div class="stat-card spice">
+        <div class="stat-label">Réservations confirmées</div>
+        <div class="stat-val" id="statConfirmed">${stats.confirmedReservations}</div>
+        <div class="stat-sub" style="color:var(--spice);">Statut validé</div>
+        <i class="fas fa-star stat-icon"></i>
+      </div>
+      <div class="stat-card night">
+        <div class="stat-label">Réservations annulées</div>
+        <div class="stat-val" id="statCancelled">${stats.cancelledReservations}</div>
+        <div class="stat-sub down"><i class="fas fa-ban"></i> Total annulations</div>
+        <i class="fas fa-inbox stat-icon"></i>
+      </div>
+    `;
+  }
+
+  function renderMiniChart(days, values) {
+    const max = Math.max(...values, 1);
+    const chart = document.getElementById('miniChart');
+    chart.innerHTML = '';
+    days.forEach((day, i) => {
+      const h = Math.max(8, Math.round((values[i] / max) * 110));
+      const wrap = document.createElement('div');
+      wrap.className = 'bar-wrap';
+      wrap.innerHTML = `<div class="bar" style="height:${h}px;" title="${values[i]} réservations"></div><span class="bar-label">${day}</span>`;
+      chart.appendChild(wrap);
+    });
+  }
+
+  function escapeHtml(value) {
+    return String(value || '')
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;');
+  }
+
+  function timeAgo(value) {
+    if (!value) return 'Date inconnue';
+    const date = new Date(value);
+    if (Number.isNaN(date.getTime())) return 'Date inconnue';
+    const diffMs = Date.now() - date.getTime();
+    const mins = Math.max(1, Math.floor(diffMs / 60000));
+    if (mins < 60) return `Il y a ${mins} min`;
+    const hours = Math.floor(mins / 60);
+    const remMins = mins % 60;
+    if (hours < 24) return remMins > 0 ? `Il y a ${hours}h ${remMins}min` : `Il y a ${hours}h`;
+    const days = Math.floor(hours / 24);
+    return `Il y a ${days} jour${days > 1 ? 's' : ''}`;
+  }
+
+  function buildActivities(reservations, reviews, messages) {
+    const reservationActivities = (reservations || []).map(r => ({
+      type: 'reservation', createdAt: r.createdAt,
+      text: `<strong>${escapeHtml(`${r.firstName} ${r.lastName}`)}</strong> a réservé pour ${r.guestsCount} personne${r.guestsCount > 1 ? 's' : ''}`,
+      dotClass: r.status === 'CANCELLED' ? 'spice' : '',
+    }));
+    const reviewActivities = (reviews || []).map(r => ({
+      type: 'review', createdAt: r.createdAt,
+      text: `Nouvel avis ${'★'.repeat(r.rating)} de <strong>${escapeHtml(r.fullName)}</strong>`,
+      dotClass: 'olive',
+    }));
+    const messageActivities = (messages || []).map(m => ({
+      type: 'message', createdAt: m.createdAt,
+      text: `Nouveau message de <strong>${escapeHtml(`${m.firstName} ${m.lastName}`)}</strong> – ${escapeHtml(m.subject)}`,
+      dotClass: '',
+    }));
+    return [...reservationActivities, ...reviewActivities, ...messageActivities]
+      .filter(item => item.createdAt)
+      .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+      .slice(0, 8);
+  }
+
+  function renderRecentActivity(items) {
+    const list = document.getElementById('activityList');
+    if (!list) return;
+    if (!items.length) {
+      list.innerHTML = `
+        <div class="activity-item">
+          <div class="activity-dot"></div>
+          <div>
+            <div class="activity-text">Aucune activité récente pour le moment.</div>
+            <div class="activity-time">En attente de nouvelles données</div>
+          </div>
+        </div>`;
+      return;
+    }
+    list.innerHTML = items.map(item => `
+      <div class="activity-item">
+        <div class="activity-dot ${item.dotClass}"></div>
+        <div>
+          <div class="activity-text">${item.text}</div>
+          <div class="activity-time">${timeAgo(item.createdAt)}</div>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  async function loadDashboard() {
+    /* Affiche les squelettes pendant le chargement */
+    showStatsSkeleton();
+    showChartSkeleton();
+    showActivitySkeleton();
+
+    try {
+      const [stats, weekly, reservations, reviews, messages] = await Promise.all([
+        adminFetch('/api/admin/dashboard'),
+        adminFetch('/api/admin/dashboard/weekly-reservations'),
+        adminFetch('/api/admin/reservations'),
+        adminFetch('/api/admin/reviews'),
+        adminFetch('/api/admin/contact-messages')
+      ]);
+
+      /* Remplace les squelettes par le vrai contenu */
+      renderStatCards(stats);
+      document.getElementById('statTotal').textContent = `${stats.totalReservations} réservations`;
+      renderMiniChart(weekly.labels || [], weekly.values || []);
+      renderRecentActivity(buildActivities(reservations, reviews, messages));
+    } catch (error) {
+      showToast(error.message || 'Erreur de chargement', false);
+    }
+  }
+
+  loadDashboard();
+</script>
+</body>
+</html>
