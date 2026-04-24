@@ -67,7 +67,6 @@ public class SecurityConfig {
 
     private static final String[] DENIED_FILE_PATTERNS = {
             "/backend/**",
-            "/.codex/**"
     };
 
     private final JwtAuthenticationFilter jwtAuthenticationFilter;

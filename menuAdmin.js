@@ -44,11 +44,14 @@ function bindMenuAdminEvents() {
   document.getElementById("menuCuisineFilter").addEventListener("change", renderAdminMenuCards);
   document.getElementById("menuImageUrl").addEventListener("input", handleImageUrlInput);
   document.getElementById("menuBadges").addEventListener("input", renderBadgePreview);
-  document.getElementById("newMenuItemBtn").addEventListener("click", resetMenuForm);
+  document.getElementById("newMenuItemBtn").addEventListener("click", openFreshMenuForm);
   document.getElementById("refreshMenuBtn").addEventListener("click", loadAdminMenuItems);
   document.getElementById("chooseMenuImageBtn").addEventListener("click", openLocalImagePicker);
   document.getElementById("menuImagePickerTrigger").addEventListener("click", openLocalImagePicker);
   document.getElementById("menuImageFile").addEventListener("change", handleLocalImageSelection);
+  document.getElementById("closeMenuFormBtn").addEventListener("click", closeMenuForm);
+  document.getElementById("menuFormBackdrop").addEventListener("click", closeMenuForm);
+  document.addEventListener("keydown", handleMenuFormEscape);
 }
 
 async function loadAdminMenuItems() {
@@ -120,6 +123,8 @@ function renderAdminMenuCards() {
     .map((item) => {
       const activeClass = item.active ? "is-active" : "is-hidden";
       const activeLabel = item.active ? "Visible" : "Masque";
+      const toggleLabel = item.active ? "Rendre non visible" : "Rendre visible";
+      const toggleIcon = item.active ? "fa-eye-slash" : "fa-eye";
       return `
         <article class="menu-admin-card">
           <div class="menu-admin-card-image-wrap">
@@ -149,6 +154,9 @@ function renderAdminMenuCards() {
                 : ""
             }
             <div class="menu-admin-actions">
+              <button class="btn-sm visibility-toggle ${activeClass}" type="button" onclick="toggleMenuVisibility(${item.id})">
+                <i class="fas ${toggleIcon}" style="margin-right:5px;"></i>${toggleLabel}
+              </button>
               <button class="btn-sm outline" type="button" onclick="editMenuItem(${item.id})">
                 <i class="fas fa-pen" style="margin-right:5px;"></i>Modifier
               </button>
@@ -191,6 +199,7 @@ async function saveMenuItem(event) {
     showToast(isEditing ? "Article mis a jour." : "Article ajoute au menu.", true);
     await loadAdminMenuItems();
     resetMenuForm();
+    closeMenuForm();
   } catch (error) {
     showToast(error.message || "Impossible d'enregistrer l'article.", false);
   }
@@ -217,7 +226,7 @@ function editMenuItem(id) {
 
   renderBadgePreview();
   updateImagePreview();
-  document.getElementById("menuFormCard").scrollIntoView({ behavior: "smooth", block: "start" });
+  openMenuForm();
 }
 
 async function removeMenuItem(id) {
@@ -239,6 +248,34 @@ async function removeMenuItem(id) {
   }
 }
 
+async function toggleMenuVisibility(id) {
+  const item = adminMenuItems.find((entry) => entry.id === id);
+  if (!item) return;
+
+  const nextActive = !item.active;
+
+  try {
+    const updatedItem = await adminFetch(`/api/admin/menu/${id}`, {
+      method: "PUT",
+      body: JSON.stringify(buildMenuPayload(item, nextActive)),
+    });
+
+    adminMenuItems = adminMenuItems.map((entry) => (entry.id === id ? updatedItem : entry));
+    if (editingMenuItemId === id) {
+      document.getElementById("menuActive").checked = Boolean(updatedItem.active);
+    }
+
+    renderAdminMenuCards();
+    renderAdminStats();
+    showToast(
+      nextActive ? "L'article est maintenant visible sur le site." : "L'article est maintenant masque cote client.",
+      true,
+    );
+  } catch (error) {
+    showToast(error.message || "Impossible de changer la visibilite.", false);
+  }
+}
+
 function collectMenuFormPayload() {
   const displayOrderRaw = document.getElementById("menuDisplayOrder").value.trim();
   return {
@@ -255,6 +292,21 @@ function collectMenuFormPayload() {
   };
 }
 
+function buildMenuPayload(item, activeOverride = item.active) {
+  return {
+    name: item.name || "",
+    cuisine: item.cuisine || "JAPON",
+    location: item.location || "",
+    price: item.price || "",
+    pieces: item.pieces || "",
+    description: item.description || "",
+    imageUrl: item.imageUrl || "",
+    badges: Array.isArray(item.badges) ? item.badges : [],
+    displayOrder: item.displayOrder ?? null,
+    active: Boolean(activeOverride),
+  };
+}
+
 function resetMenuForm() {
   editingMenuItemId = null;
   clearLocalPreview();
@@ -266,6 +318,31 @@ function resetMenuForm() {
   document.getElementById("menuImageFile").value = "";
   renderBadgePreview();
   updateImagePreview();
+}
+
+function openFreshMenuForm() {
+  resetMenuForm();
+  openMenuForm();
+}
+
+function openMenuForm() {
+  document.body.classList.add("menu-form-open");
+  document.getElementById("menuFormCard").classList.add("open");
+  document.getElementById("menuFormBackdrop").classList.add("open");
+  document.getElementById("menuFormCard").scrollTop = 0;
+  document.getElementById("menuName").focus();
+}
+
+function closeMenuForm() {
+  document.body.classList.remove("menu-form-open");
+  document.getElementById("menuFormCard").classList.remove("open");
+  document.getElementById("menuFormBackdrop").classList.remove("open");
+}
+
+function handleMenuFormEscape(event) {
+  if (event.key === "Escape") {
+    closeMenuForm();
+  }
 }
 
 function renderBadgePreview() {

@@ -9,19 +9,73 @@
   <link rel="stylesheet" href="styleAdmin.css"/>
   <style>
     .menu-admin-layout {
-      display: grid;
-      grid-template-columns: 390px 1fr;
-      gap: 1.5rem;
-      align-items: start;
+      display: block;
     }
-    .menu-form-card,
     .menu-library-card {
       background: var(--white);
       padding: 1.6rem;
     }
+    .menu-form-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(26, 20, 16, 0.48);
+      backdrop-filter: blur(4px);
+      display: none;
+      z-index: 1190;
+    }
+    .menu-form-backdrop.open {
+      display: block;
+    }
     .menu-form-card {
-      position: sticky;
-      top: 96px;
+      position: fixed;
+      top: 1rem;
+      right: 1rem;
+      bottom: 1rem;
+      width: min(520px, calc(100vw - 2rem));
+      background: var(--white);
+      padding: 1.45rem;
+      overflow-y: auto;
+      box-shadow: -20px 0 60px rgba(0, 0, 0, 0.16);
+      z-index: 1200;
+      display: none;
+    }
+    .menu-form-card.open {
+      display: block;
+      animation: menuFormSlideIn 0.28s ease;
+    }
+    @keyframes menuFormSlideIn {
+      from {
+        opacity: 0;
+        transform: translateX(26px);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+    body.menu-form-open {
+      overflow: hidden;
+    }
+    .menu-form-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 1rem;
+      margin-bottom: 0.8rem;
+    }
+    .menu-form-close {
+      width: 40px;
+      height: 40px;
+      border: none;
+      background: var(--sand);
+      color: var(--night);
+      cursor: pointer;
+      transition: background var(--transition), color var(--transition);
+      flex-shrink: 0;
+    }
+    .menu-form-close:hover {
+      background: var(--terracotta);
+      color: var(--white);
     }
     .menu-panel-title {
       font-family: var(--ff-display);
@@ -284,6 +338,20 @@
       flex-wrap: wrap;
       margin-top: 0.35rem;
     }
+    .visibility-toggle.is-active {
+      background: var(--olive);
+      color: var(--white);
+    }
+    .visibility-toggle.is-active:hover {
+      background: #56632f;
+    }
+    .visibility-toggle.is-hidden {
+      background: var(--sand2);
+      color: var(--night);
+    }
+    .visibility-toggle.is-hidden:hover {
+      background: var(--sand3);
+    }
     .menu-admin-empty {
       padding: 2rem;
       border: 1px dashed var(--sand3);
@@ -321,11 +389,8 @@
       100% { background-position: -200% 0; }
     }
     @media (max-width: 1200px) {
-      .menu-admin-layout {
-        grid-template-columns: 1fr;
-      }
       .menu-form-card {
-        position: static;
+        width: min(620px, calc(100vw - 2rem));
       }
     }
     @media (max-width: 900px) {
@@ -340,8 +405,14 @@
       .content {
         padding: 1.25rem;
       }
-      .menu-form-card,
       .menu-library-card {
+        padding: 1.1rem;
+      }
+      .menu-form-card {
+        top: 0;
+        right: 0;
+        bottom: 0;
+        width: 100vw;
         padding: 1.1rem;
       }
       .menu-library-head {
@@ -436,13 +507,22 @@
       </div>
     </div>
 
+    <div class="menu-form-backdrop" id="menuFormBackdrop"></div>
+
     <div class="menu-admin-layout">
       <section class="menu-form-card" id="menuFormCard">
-        <div class="menu-panel-title" id="menuFormTitle">Ajouter un article</div>
-        <p class="menu-panel-subtitle">
-          Chaque article enregistre ici sera affiche directement dans <code>menu.html</code>.
-          Vous gardez le design client, mais le contenu vient maintenant de la base de donnees.
-        </p>
+        <div class="menu-form-head">
+          <div>
+            <div class="menu-panel-title" id="menuFormTitle">Ajouter un article</div>
+            <p class="menu-panel-subtitle">
+              Chaque article enregistre ici sera affiche directement dans <code>menu.html</code>.
+              Vous gardez le design client, mais le contenu vient maintenant de la base de donnees.
+            </p>
+          </div>
+          <button class="menu-form-close" id="closeMenuFormBtn" type="button" aria-label="Fermer">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
 
         <div class="image-preview-frame" id="menuImagePickerTrigger" title="Cliquer pour choisir une image locale">
           <img id="menuImagePreview" alt="Apercu de l'image"/>
