@@ -34,5 +34,9 @@ class PublicAssetsIntegrationTest {
         mockMvc.perform(get("/mondelys-utils.js"))
                 .andExpect(status().isOk())
                 .andExpect(content().string(containsString("const Toast")));
+
+        mockMvc.perform(get("/menuPage.js"))
+                .andExpect(status().isOk())
+                .andExpect(content().string(containsString("MENU_SECTIONS")));
     }
 }

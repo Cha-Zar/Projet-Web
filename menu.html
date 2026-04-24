@@ -226,6 +226,73 @@
         50%      { box-shadow: 0 8px 40px rgba(201,168,76,.8), 0 0 0 12px rgba(201,168,76,.07); }
       }
 
+      .menu-loading-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1.5rem;
+      }
+      .menu-loading-card,
+      .menu-empty-state,
+      .menu-status-bar {
+        background: rgba(255, 253, 248, 0.72);
+        border: 1px solid rgba(201, 168, 76, 0.16);
+        padding: 1.15rem;
+      }
+      .menu-loading-photo,
+      .menu-loading-line {
+        background: linear-gradient(
+          90deg,
+          rgba(201,168,76,0.08) 25%,
+          rgba(201,168,76,0.18) 50%,
+          rgba(201,168,76,0.08) 75%
+        );
+        background-size: 200% 100%;
+        animation: menu-loading-shimmer 1.6s ease-in-out infinite;
+      }
+      .menu-loading-photo {
+        height: 220px;
+        margin-bottom: 1rem;
+      }
+      .menu-loading-line {
+        height: 12px;
+        margin-bottom: 0.7rem;
+      }
+      .menu-loading-line.lg { width: 72%; }
+      .menu-loading-line.md { width: 86%; }
+      .menu-loading-line.sm { width: 46%; }
+      .menu-empty-state,
+      .menu-status-bar {
+        text-align: center;
+      }
+      .menu-empty-state h3,
+      .menu-status-bar h3 {
+        font-family: var(--ff-display);
+        font-size: 0.95rem;
+        letter-spacing: 2px;
+        color: var(--night);
+        margin-bottom: 0.65rem;
+      }
+      .menu-empty-state p,
+      .menu-status-bar p {
+        color: var(--text-light);
+        line-height: 1.7;
+        max-width: 620px;
+        margin: 0 auto;
+      }
+      .menu-status-bar {
+        max-width: 720px;
+        margin: 0 auto;
+      }
+      @keyframes menu-loading-shimmer {
+        0% { background-position: 200% 0; }
+        100% { background-position: -200% 0; }
+      }
+      @media (max-width: 768px) {
+        .menu-loading-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+
       @media (prefers-reduced-motion: reduce) {
         *, *::before, *::after {
           animation-duration: 0.01ms !important;
@@ -291,751 +358,12 @@
     <section class="section" style="background: var(--ivory)">
       <div class="container">
         <div class="menu-tabs-wrap">
-          <div class="menu-tabs">
-  <button class="tab-btn active" data-tab="japon">🇯🇵 Japon</button>
-  <button class="tab-btn" data-tab="mexique">🇲🇽 Mexique</button>
-  <button class="tab-btn" data-tab="italie">🇮🇹 Italie</button>
-  <button class="tab-btn" data-tab="Arabique">
-    <span class="code">OR</span> Orientale
-  </button>
-  <button class="tab-btn" data-tab="desserts">Desserts</button>
-  <span class="tab-marker" id="tabMarker"></span>
-</div>
-        </div>
-
-        <!-- ========================
-         JAPON
-    ======================== -->
-        <div class="menu-section active" id="japon">
-          <div class="menu-intro">
-            <p class="section-label">🇯🇵 Cuisine Japonaise</p>
-            <h2 class="section-title">L'Art de la <em>Précision</em></h2>
-            <p>
-              Saveurs du Japon à l'état pur — sushi exquis, wagyu fondant et
-              techniques ancestrales perfectionnées.
-            </p>
-          </div>
-          <div class="menu-grid">
-            <div class="menu-item">
-              <img
-                src="\images\GYOZA.jpg"
-                alt="Japanese GYOZA"
-              />
-              <div class="menu-item-info">
-                <div class="menu-item-header">
-                  <h3>Japanese GYOZA (Dumplings)</h3>
-                  <span class="menu-item-price">56 TND(8 piéces)</span>
-                </div>
-                <p class="menu-item-desc">
-                  6 ravioles grillées-vapeur, farce porc ibérique, truffe noire
-                  et gingembre confit, sauce ponzu maison. -NON HALAL-
-                </p>
-                <p class="menu-item-origin">
-                  <i class="fas fa-map-marker-alt"></i> Tokyo, Japon
-                </p>
-                <div class="menu-item-tags">
-                  <span class="tag-badge tag-chef">Chef's Choice</span>
-                </div>
-              </div>
-            </div>
-
-            <div class="menu-item">
-              <img src="\images\SUSHI1.jpg" alt="Sushi Cru" />
-              <div class="menu-item-info">
-                <div class="menu-item-header">
-                  <h3>Sushi Cru</h3>
-                  <span class="menu-item-price">96 TND(16 piéces)</span>
-                </div>
-                <p class="menu-item-desc">
-                  Délicat sushi au saumon cru, accompagné d'avocat fondant et de
-                  graines de sésame, sur un riz vinaigré parfaitement
-                  assaisonné. accompagné d'une sauce soja subtilement salée et
-                  sucrée. Option : Par Piéces .
-                </p>
-                <p class="menu-item-origin">
-                  <i class="fas fa-map-marker-alt"></i> Japon
-                </p>
-                <div class="menu-item-tags">
-                  <span class="tag-badge tag-epice">Relevé</span>
-                  <span class="tag-badge tag-chef">Signature</span>
-                </div>
-              </div>
-            </div>
-
-            <div class="menu-item">
-              <img src="\images\SUSHI2.jpg" alt="Sushi Cuit" />
-              <div class="menu-item-info">
-                <div class="menu-item-header">
-                  <h3>Sushi Cuit</h3>
-                  <span class="menu-item-price">55 TND</span>
-                </div>
-                <p class="menu-item-desc">
-                  Un sushi crunchy irrésistible : saumon cuit tendre à cœur,
-                  texture croustillante à l'extérieur, avocat crémeux et sauce
-                  soja douce et équilibrée. Option : Par Piéces .
-                </p>
-                <p class="menu-item-origin">
-                  <i class="fas fa-map-marker-alt"></i> Japon
-                </p>
-                <div class="menu-item-tags">
-                  <span class="tag-badge tag-chef">Signature</span>
-                </div>
-              </div>
-            </div>
-
-            <div class="menu-item">
-              <img
-                src="images\Fiery_Chicken.jpg"
-                alt="Chicken Ramen"
-              />
-              <div class="menu-item-info">
-                <div class="menu-item-header">
-                  <h3>Chicken Ramen</h3>
-                  <span class="menu-item-price">45 TND</span>
-                </div>
-                <p class="menu-item-desc">
-                  Bouillon parfumé et légèrement piquant, poulet délicatement
-                  mariné et nouilles soyeuses, sublimés par des épices
-                  soigneusement sélectionnées.
-                </p>
-                <p class="menu-item-origin">
-                  <i class="fas fa-map-marker-alt"></i> fukuoka, Japon
-                </p>
-                <div class="menu-item-tags">
-                  <span class="tag-badge tag-chef">Signature</span>
-                </div>
-              </div>
-            </div>
-
-            <div class="menu-item">
-              <img
-                src="images\Katsu.jpg"
-                alt="Katsu curry"
-              />
-              <div class="menu-item-info">
-                <div class="menu-item-header">
-                  <h3>Katsu curry</h3>
-                  <span class="menu-item-price">35 TND</span>
-                </div>
-                <p class="menu-item-desc">
-                  Poulet pané croustillant, nappé d'une sauce curry relevée et
-                  épicée, servi avec du riz moelleux pour une explosion de
-                  saveurs.
-                </p>
-                <p class="menu-item-origin">
-                  <i class="fas fa-map-marker-alt"></i> Japon
-                </p>
-                <div class="menu-item-tags">
-                  <span class="tag-badge tag-new">Nouveau</span>
-                </div>
-              </div>
-            </div>
-
-            <div class="menu-item">
-              <img src="images\Takoyaki.jpg" alt="Takoyaki" />
-              <div class="menu-item-info">
-                <div class="menu-item-header">
-                  <h3>Takoyaki</h3>
-                  <span class="menu-item-price"> 40 TND(6piéces)</span>
-                </div>
-                <p class="menu-item-desc">
-                  Boulettes de pâte moelleuse garnies de morceaux de poulpe,
-                  cuites à la perfection et nappées d'une sauce takoyaki
-                  savoureuse, parsemées de flocons de bonite et d'algues.
-                </p>
-                <p class="menu-item-origin">
-                  <i class="fas fa-map-marker-alt"></i> Japon
-                </p>
-                <div class="menu-item-tags">
-                  <span class="tag-badge tag-gf">Poulpe</span>
-                </div>
-              </div>
-            </div>
+          <div class="menu-tabs" id="menuTabs">
+            <span class="tab-marker" id="tabMarker"></span>
           </div>
         </div>
-        <!-- ========================
-         MEXIQUE
-    ======================== -->
-        <div class="menu-section" id="mexique">
-          <div class="menu-intro">
-            <p class="section-label">🇲🇽 Cuisine Mexicaine</p>
-            <h2 class="section-title">Sabores <em>Mexicanos</em></h2>
-            <p>
-              Voyage au cœur de l'Amérique du Sud – Savourez des ceviches frais, des moles ancestraux et des ingrédients rares de Oaxaca et Puebla, pour un mélange vibrant de couleurs et de saveurs.
-            </p>
-          </div>
-          <div class="menu-grid">
-            <div class="menu-item">
-              <img
-                src="images\Cheesy_Beef.jpg"
-                alt="Enchiladas"
-              />
-              <div class="menu-item-info">
-                <div class="menu-item-header">
-                  <h3>Cheesy & Beef Enchiladas</h3>
-                  <span class="menu-item-price">40 TND</span>
-                </div>
-                <p class="menu-item-desc">
-                  Enchiladas Cheese & Beef – Tortillas garnies de bœuf tendre et de fromage fondant, baignées dans une sauce relevée pour un mélange de saveurs gourmandes et authentiques.  
-                </p>
-                <p class="menu-item-origin">
-                  <i class="fas fa-map-marker-alt"></i>Mexique
-                </p>
-                <div class="menu-item-tags">
-                  <span class="tag-badge tag-gf">Halal</span
-                  ><span class="tag-badge tag-new">Nouveau</span>
-                </div>
-              </div>
-            </div>
-
-            <div class="menu-item">
-              <img
-                src="images\Tortillas.jpg"
-                alt="Mexicano Tacos"
-              />
-              <div class="menu-item-info">
-                <div class="menu-item-header">
-                  <h3>Mexicano Tacos</h3>
-                  <span class="menu-item-price">50 TND</span>
-                </div>
-                <p class="menu-item-desc">
-                  Tortillas Variées – Un plateau de tortillas aux multiples garnitures, alliant textures et saveurs pour un plaisir partagé à chaque bouchée.  
-                </p>
-                <p class="menu-item-origin">
-                  <i class="fas fa-map-marker-alt"></i>Mexico City, Mexique
-                </p>
-                <div class="menu-item-tags">
-                  <span class="tag-badge tag-chef">Chef's Choice</span>
-                </div>
-              </div>
-            </div>
-
-            <div class="menu-item">
-              <img
-                src="images\Guacamole.jpg"
-                alt="Guacamole"
-              />
-              <div class="menu-item-info">
-                <div class="menu-item-header">
-                  <h3>Guacamole</h3>
-                  <span class="menu-item-price">26 TND</span>
-                </div>
-                <p class="menu-item-desc">
-                  Purée d'avocat crémeuse avec tomates, oignons, coriandre et citron vert.
-                </p>
-                <p class="menu-item-origin">
-                  <i class="fas fa-map-marker-alt"></i> Mexique
-                </p>
-                <div class="menu-item-tags">
-                  <span class="tag-badge tag-chef">Signature</span>
-                </div>
-              </div>
-            </div>
-
-            <div class="menu-item">
-              <img
-                src="images\Poblano.jpg"
-                alt="Mole Poblano"
-              />
-              <div class="menu-item-info">
-                <div class="menu-item-header">
-                  <h3>Mole Poblano</h3>
-                  <span class="menu-item-price">52 TND</span>
-                </div>
-                <p class="menu-item-desc">
-                  Poulet nappé d'une sauce riche au chocolat, piments et épices mexicaines.
-                </p>
-                <p class="menu-item-origin">
-                  <i class="fas fa-map-marker-alt"></i> originaire de Puebla, Mexique
-                </p>
-                <div class="menu-item-tags">
-                  <span class="tag-badge tag-vege">Halal</span
-                  ><span class="tag-badge tag-gf">des saveurs sucrées et épicées</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- ========================
-         ITALIE
-    ======================== -->
-        <div class="menu-section" id="italie">
-          <div class="menu-intro">
-            <p class="section-label">🇮🇹 Cuisine Italienne</p>
-            <h2 class="section-title"><em>Dolce Vita</em> Italiana</h2>
-            <p>
-              Un voyage au cœur de l'Italie, entre pâtes artisanales, pizzas
-              croustillantes et parfums méditerranéens inoubliables.
-            </p>
-          </div>
-          <div class="menu-grid">
-            <div class="menu-item">
-              <img src="images\carbonara.jpg" alt="Carbonara" />
-              <div class="menu-item-info">
-                <div class="menu-item-header">
-                  <h3>Spaghetti Carbonara Originale</h3>
-                  <span class="menu-item-price">50 TND</span>
-                </div>
-                <p class="menu-item-desc">
-                  L'authentique Carbonara italienne : spaghetti parfaitement
-                  cuits, sauce onctueuse aux œufs et Pecorino, morceaux de
-                  pancetta dorée et touche de poivre noir.
-                </p>
-                <p class="menu-item-origin">
-                  <i class="fas fa-map-marker-alt"></i> Rome, Italie
-                </p>
-                <div class="menu-item-tags">
-                  <span class="tag-badge tag-chef">Authentique</span>
-                </div>
-              </div>
-            </div>
-
-            <div class="menu-item">
-              <img src="images\Raviolis.jpg" alt="Raviolis" />
-              <div class="menu-item-info">
-                <div class="menu-item-header">
-                  <h3>Ravioli del chef</h3>
-                  <span class="menu-item-price">40 TND</span>
-                </div>
-                <p class="menu-item-desc">
-                  Pâtes fraîches farcies généreusement, servies avec une sauce
-                  délicate à base de tomates, beurre ou crème, et relevées de
-                  parmesan fraîchement râpé.
-                </p>
-                <p class="menu-item-origin">
-                  <i class="fas fa-map-marker-alt"></i> Italie
-                </p>
-                <div class="menu-item-tags">
-                  <span class="tag-badge tag-vege">épicée</span
-                  ><span class="tag-badge tag-chef">Chef's Choice</span>
-                </div>
-              </div>
-            </div>
-            <div class="menu-item">
-              <img
-                src="\images\ravioli.jpg"
-                alt="Raviolis"
-              />
-              <div class="menu-item-info">
-                <div class="menu-item-header">
-                  <h3>Ravioli Bianca</h3>
-                  <span class="menu-item-price">40 TND</span>
-                </div>
-                <p class="menu-item-desc">
-                  Ravioli fondants, généreusement garnis et enveloppés d'une
-                  sauce blanche crémeuse, pour une explosion de saveurs
-                  italiennes à chaque bouchée.
-                </p>
-                <p class="menu-item-origin">
-                  <i class="fas fa-map-marker-alt"></i> Italie
-                </p>
-                <div class="menu-item-tags">
-                  ><span class="tag-badge tag-chef">Chef's Choice</span>
-                </div>
-              </div>
-            </div>
-
-            <div class="menu-item">
-              <img src="images\burrata1.jpg" alt="Pizza Burrata" />
-              <div class="menu-item-info">
-                <div class="menu-item-header">
-                  <h3>Pizza Burrata</h3>
-                  <span class="menu-item-price">35 TND</span>
-                </div>
-                <p class="menu-item-desc">
-                  Pâte Napolitaine, garnie de tomates fraîches, roquette
-                  croquante et burrata crémeuse fondante à cœur, pour une
-                  expérience italienne raffinée.
-                </p>
-                <p class="menu-item-origin">
-                  <i class="fas fa-map-marker-alt"></i> Naples, Italie
-                </p>
-                <div class="menu-item-tags">
-                  <span class="tag-badge tag-vege">Végétarien</span
-                  ><span class="tag-badge tag-chef">Signature</span>
-                </div>
-              </div>
-            </div>
-
-            <div class="menu-item">
-              <img
-                src="images/pizza4.jpg"
-                alt="Pizza 4 fromages"
-              />
-              <div class="menu-item-info">
-                <div class="menu-item-header">
-                  <h3>Pizza 4 fromages</h3>
-                  <span class="menu-item-price">Moyenne 20 TND</span>
-                  <span class="menu-item-price">Large 30 TND</span>
-                </div>
-                <p class="menu-item-desc">
-                  Pizza généreuse nappée de quatre fromages fondants —
-                  mozzarella, Gorgonzola, Parmesan et Fontina — pour une
-                  explosion crémeuse de saveurs italiennes.
-                </p>
-                <p class="menu-item-origin">
-                  <i class="fas fa-map-marker-alt"></i> Napoli
-                </p>
-                <div class="menu-item-tags">
-                  <span class="tag-badge tag-chef">Signature</span>
-                </div>
-              </div>
-            </div>
-            <div class="menu-item">
-              <img
-                src="images\champ.jpg"
-                alt="Pizza champignons"
-              />
-              <div class="menu-item-info">
-                <div class="menu-item-header">
-                  <h3>Pizza champignons & Tomates</h3>
-                  <span class="menu-item-price">Moyenne 22 TND</span>
-                  <span class="menu-item-price">Large 32 TND</span>
-                </div>
-                <p class="menu-item-desc">
-                  Pizza Champignons, Fromage & Tomates – Une harmonie de
-                  champignons frais, tomates mûres et fromage fondant, pour un
-                  goût à la fois léger et savoureux.
-                </p>
-                <p class="menu-item-origin">
-                  <i class="fas fa-map-marker-alt"></i> Napoli
-                </p>
-                <div class="menu-item-tags">
-                  <span class="tag-badge tag-chef">Signature</span>
-                </div>
-              </div>
-            </div>
-
-            <div class="menu-item">
-              <img src="images\Rigatoni.jpg" alt="Rigatoni" />
-              <div class="menu-item-info">
-                <div class="menu-item-header">
-                  <h3>Rigatoni</h3>
-                  <span class="menu-item-price">42 TND</span>
-                </div>
-                <p class="menu-item-desc">
-                  Rigatoni al dente, enrobés d'une sauce à la viande mijotée
-                  lentement aux tomates et herbes italiennes, pour un goût
-                  authentique et réconfortant.
-                </p>
-                <p class="menu-item-origin">
-                  <i class="fas fa-map-marker-alt"></i> Milan, Italie
-                </p>
-                <div class="menu-item-tags">
-                  <span class="tag-badge tag-gf">Sans Gluten</span>
-                </div>
-              </div>
-            </div>
-
-            <div class="menu-item">
-              <img src="images\BURRATAA.jpg" alt="BRUSCHETTA" />
-              <div class="menu-item-info">
-                <div class="menu-item-header">
-                  <h3>BRUSCHETTA</h3>
-                  <span class="menu-item-price">15 TND(2 piéces)</span>
-                </div>
-                <p class="menu-item-desc">
-                  Bruschetta croquante garnie de tomates fraîches, basilic et
-                  fromage fondant, assaisonnée d'un filet d'huile d'olive extra
-                  vierge
-                </p>
-                <p class="menu-item-origin">
-                  <i class="fas fa-map-marker-alt"></i> Venise, Italie
-                </p>
-                <div class="menu-item-tags">
-                  <span class="tag-badge tag-vege">Végétarien</span>
-                </div>
-              </div>
-            </div>
-
-            <div class="menu-item">
-              <img src="images\tagliatelle.jpg" alt="Tagliatelle" />
-              <div class="menu-item-info">
-                <div class="menu-item-header">
-                  <h3>Creamy Dreamy Chicken & Mushroom Tagliatelle Delight</h3>
-                  <span class="menu-item-price">52 TND</span>
-                </div>
-                <p class="menu-item-desc">
-                  Tagliatelle à la Sauce Blanche – Des tagliatelles savoureuses
-                  enrobées d'une sauce blanche onctueuse et subtilement
-                  assaisonnée, pour un plat réconfortant et plein de goût.
-                </p>
-                <p class="menu-item-origin">
-                  <i class="fas fa-map-marker-alt"></i> Bologne, Italie
-                </p>
-                <div class="menu-item-tags"></div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        
-        <!-- ========================
-         ORIENTAL
-    ======================== -->
-<div class="menu-section" id="Arabique">
-  <div class="menu-intro">
-    <p class="section-label">
-      <span class="code">OR</span> Cuisine Orientale
-    </p>
-    <h2 class="section-title"><em>Saveurs D'</em> Orient</h2>
-    <p>
-      Voyage gourmand au cœur de l'Orient — Des saveurs authentiques et épicées,
-      un mélange de traditions et de couleurs qui émerveille les sens.  
-    </p>
-  </div>
-  <div class="menu-grid">
-    <div class="menu-item">
-      <img src="images/houmous.jpg" alt="Hummus" />
-      <div class="menu-item-info">
-        <div class="menu-item-header">
-          <h3>Hummus</h3>
-          <span class="menu-item-price">16 TND</span>
-        </div>
-        <p class="menu-item-desc">
-          Hummus – Une purée onctueuse de pois chiches, délicatement assaisonnée de tahini, citron et huile d'olive, pour un goût doux, crémeux et authentiquement oriental.  
-        </p>
-        <p class="menu-item-origin">
-          <i class="fas fa-map-marker-alt"></i> Lebanon, Syrie
-        </p>
-        <div class="menu-item-tags">
-          <span class="tag-badge tag-epice">Épicée</span>
-          <span class="tag-badge tag-chef">Chef's Choice</span>
-        </div>
+        <div id="menuContent"></div>
       </div>
-    </div>
-
-    <div class="menu-item">
-      <img src="images/kibbah.jpg" alt="Kebbe" />
-      <div class="menu-item-info">
-        <div class="menu-item-header">
-          <h3>Kebbe</h3>
-          <span class="menu-item-price">20 TND (4 pièces)</span>
-        </div>
-        <p class="menu-item-desc">
-          Kebbe – Boulettes dorées et parfumées, alliant viande épicée et boulgour, pour une explosion de saveurs orientales à chaque bouchée.  
-        </p>
-        <p class="menu-item-origin">
-          <i class="fas fa-map-marker-alt"></i> Lebanon, Syrie
-        </p>
-        <div class="menu-item-tags">
-          <span class="tag-badge tag-chef">Chef's Choice</span>
-        </div>
-      </div>
-    </div>
-
-    <div class="menu-item">
-      <img src="images/dolmas.jpg" alt="Yabraq" />
-      <div class="menu-item-info">
-        <div class="menu-item-header">
-          <h3>Yabraq</h3>
-          <span class="menu-item-price">18 TND</span>
-        </div>
-        <p class="menu-item-desc">
-          Yabraq – Des roulés savoureux de feuilles de vigne garnies de riz et d'épices, pour un plat aromatique et réconfortant.  
-        </p>
-        <p class="menu-item-origin">
-          <i class="fas fa-map-marker-alt"></i> Syrie, Lebanon
-        </p>
-        <div class="menu-item-tags">
-          <span class="tag-badge tag-chef">Authentique</span>
-        </div>
-      </div>
-    </div>
-
-    <div class="menu-item">
-      <img src="images/tabbouleh.jpg" alt="Tabbouleh" />
-      <div class="menu-item-info">
-        <div class="menu-item-header">
-          <h3>Tabbouleh</h3>
-          <span class="menu-item-price">16 TND</span>
-        </div>
-        <p class="menu-item-desc">
-          Tabbouleh – Une salade fraîche et légère à base de persil, boulgour, tomates et citron, pleine de saveurs et de fraîcheur orientale. 
-        </p>
-        <p class="menu-item-origin">
-          <i class="fas fa-map-marker-alt"></i> Syrie, Lebanon
-        </p>
-        <div class="menu-item-tags">
-          <span class="tag-badge tag-vege">Végétarien</span>
-          <span class="tag-badge tag-chef">Signature</span>
-        </div>
-      </div>
-    </div>
-
-    <div class="menu-item">
-      <img src="images/maklouba.jpg" alt="Maqlouba" />
-      <div class="menu-item-info">
-        <div class="menu-item-header">
-          <h3>Maqlouba</h3>
-          <span class="menu-item-price">35 TND</span>
-        </div>
-        <p class="menu-item-desc">
-          Maqlouba – Délicieux mélange de riz, légumes et viande, préparé avec soin et présenté renversé, pour un festival de saveurs authentiques.  
-        </p>
-        <p class="menu-item-origin">
-          <i class="fas fa-map-marker-alt"></i> Palestine, Jordanie
-        </p>
-        <div class="menu-item-tags">
-          <span class="tag-badge tag-chef">Signature</span>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- ========================
-         DESSERTS
-    ======================== -->
-<div class="menu-section" id="desserts">
-  <div class="menu-intro">
-    <p class="section-label"> Desserts du Monde</p>
-    <h2 class="section-title">La <em>Douceur</em> des Continents</h2>
-    <p>
-      Une finale sucrée qui fait le tour du monde ...
-    </p>
-  </div>
-  <div class="menu-grid">
-    <div class="menu-item">
-      <img
-        src="images\Mochi.jpg"
-        alt="Mochi"
-      />
-      <div class="menu-item-info">
-        <div class="menu-item-header">
-          <h3>Mochi Ice Cream Collection</h3>
-          <span class="menu-item-price">32 TND</span>
-        </div>
-        <p class="menu-item-desc">
-          Sélection de 6 mochis artisanaux : matcha Uji, yuzu, sakura,
-          sésame noir, mangue Alphonso, litchi-rose — pâte de riz
-          glutineux
-        </p>
-        <p class="menu-item-origin">
-          <i class="fas fa-map-marker-alt"></i> 🇯🇵 Kyoto, Japon
-        </p>
-        <div class="menu-item-tags">
-          <span class="tag-badge tag-vege">Sucrée</span>
-        </div>
-      </div>
-    </div>
-
-    <div class="menu-item">
-      <img
-        src="images\tiramisu.jpg"
-        alt="Tiramisu"
-      />
-      <div class="menu-item-info">
-        <div class="menu-item-header">
-          <h3>Tiramisu Nutella</h3>
-          <span class="menu-item-price">18 TND</span>
-        </div>
-        <p class="menu-item-desc">
-          Tiramisu – Dessert italien emblématique à base de biscuits imbibés de café, mascarpone crémeux et cacao saupoudré, offrant un équilibre parfait entre douceur, onctuosité et goût intense de café.
-        </p>
-        <p class="menu-item-origin">
-          <i class="fas fa-map-marker-alt"></i> IT Italie
-        </p>
-        <div class="menu-item-tags">
-          <span class="tag-badge tag-chef">Chef's Choice</span>
-        </div>
-      </div>
-    </div>
-
-    <div class="menu-item">
-      <img
-        src="images\Chocolate_Heaven.jpg"
-        alt="Churros"
-      />
-      <div class="menu-item-info">
-        <div class="menu-item-header">
-          <h3>Churros Dulce de Leche</h3>
-          <span class="menu-item-price">40 TND</span>
-        </div>
-        <p class="menu-item-desc">
-          Churros – Bâtonnets dorés et croustillants, sucrés à souhait et servis avec une sauce chocolat onctueuse, pour un vrai régal gourmand.  
-        </p>
-        <p class="menu-item-origin">
-          <i class="fas fa-map-marker-alt"></i> 🇲🇽 Mexico City
-        </p>
-      </div>
-    </div>
-
-    <div class="menu-item">
-      <img
-        src="images\kunefe.jpg"
-        alt="Küneffah"
-      />
-      <div class="menu-item-info">
-        <div class="menu-item-header">
-          <h3>Küneffah</h3>
-          <span class="menu-item-price">Moyenne 15 TND</span>
-          <span class="menu-item-price">Large 22 TND</span>
-        </div>
-        <p class="menu-item-desc">
-          Küneffah – Douceur du Moyen-Orient : fromage fondant enveloppé de fils de pâte croustillants, nappé d'un sirop délicatement parfumé.  
-        </p>
-        <p class="menu-item-origin">
-          <i class="fas fa-map-marker-alt"></i> 🇮🇹 Syrie
-        </p>
-      </div>
-    </div>
-    <div class="menu-item">
-      <img
-        src="images\Tunisian_tea.jpg"
-        alt="Thé vert à la menthe "
-      />
-      <div class="menu-item-info">
-        <div class="menu-item-header">
-          <h3>"Thé vert à la menthe</h3>
-          <span class="menu-item-price">10 TND</span>
-        </div>
-        <p class="menu-item-desc">
-          Suppléments : Amandes ,pignons 
-        </p>
-      </div>
-    </div>
-    
-    <div class="menu-item">
-      <img
-        src="images\cafe.jpg"
-        alt="Café Arabique"
-      />
-      <div class="menu-item-info">
-        <div class="menu-item-header">
-          <h3>Café Arabique</h3>
-          <span class="menu-item-price">8 TND</span>
-        </div>
-        <p class="menu-item-desc">
-          Café traditionnel fort et aromatique, préparé lentement pour révéler ses saveurs intenses et sa texture veloutée.  
-        </p>
-      </div>
-    </div>
-
-    <div class="menu-item">
-      <img
-        src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=200&q=80"
-        alt="Menu Dégustation"
-      />
-      <div class="menu-item-info">
-        <div class="menu-item-header">
-          <h3>Menu Dégustation 7 Plats</h3>
-          <span class="menu-item-price">480 TND</span>
-        </div>
-        <p class="menu-item-desc">
-          Tour du monde en 7 escales — à commander 48h à l'avance.
-        </p>
-        <p class="menu-item-origin">
-          <i class="fas fa-globe"></i> 3 Continents
-        </p>
-        <div class="menu-item-tags">
-          <span class="tag-badge tag-chef">Experience</span>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
     </section>
 
     <!-- FOOTER -->
@@ -1103,64 +431,6 @@
 
     <script src="main.js"></script>
     <script src="publicSettings.js"></script>
-    <script>
-      // --- Sliding tab marker ---
-      const tabBtns = document.querySelectorAll('.tab-btn');
-      const sections = document.querySelectorAll('.menu-section');
-      const marker = document.getElementById('tabMarker');
-
-      function moveMarker(btn) {
-        if (!marker || !btn) return;
-        const rect = btn.getBoundingClientRect();
-        const parentRect = btn.closest('.menu-tabs').getBoundingClientRect();
-        marker.style.left  = (rect.left - parentRect.left) + 'px';
-        marker.style.width = rect.width + 'px';
-      }
-
-      requestAnimationFrame(() => {
-        const active = document.querySelector('.tab-btn.active');
-        if (active) {
-          marker.style.transition = 'none';
-          moveMarker(active);
-          requestAnimationFrame(() => { marker.style.transition = ''; });
-        }
-      });
-
-      tabBtns.forEach(btn => {
-        btn.addEventListener('click', () => {
-          const target = btn.dataset.tab;
-          tabBtns.forEach(b => b.classList.remove('active'));
-          btn.classList.add('active');
-          moveMarker(btn);
-          sections.forEach(s => {
-            if (s.id === target) {
-              s.classList.add('active');
-              s.style.animation = 'none';
-              s.offsetHeight;
-              s.style.animation = '';
-            } else {
-              s.classList.remove('active');
-            }
-          });
-        });
-      });
-
-      // --- Scroll reveal ---
-      const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-          if (entry.isIntersecting) {
-            entry.target.classList.remove('scroll-hidden');
-            entry.target.classList.add('scroll-visible');
-            observer.unobserve(entry.target);
-          }
-        });
-      }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
-
-      document.querySelectorAll('.menu-section:not(.active) .menu-item').forEach(item => {
-        item.classList.add('scroll-hidden');
-        observer.observe(item);
-      });
-
-    </script>
+    <script src="menuPage.js"></script>
   </body>
 </html>

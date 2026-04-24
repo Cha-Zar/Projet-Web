@@ -4,6 +4,27 @@
   (sidebar highlight + clock)
   =========================== */
 
+// Inject the menu management page in every admin sidebar.
+(function injectMenuLink() {
+  document.querySelectorAll(".sidebar-nav").forEach((nav) => {
+    if (nav.querySelector('[data-page="menuAdmin.html"]')) {
+      return;
+    }
+
+    const link = document.createElement("a");
+    link.setAttribute("href", "menuAdmin.html");
+    link.setAttribute("data-page", "menuAdmin.html");
+    link.innerHTML = '<i class="fas fa-utensils"></i> Carte &amp; Menu';
+
+    const messagesLink = nav.querySelector('a[data-page="contactAdmin.html"]');
+    if (messagesLink) {
+      messagesLink.insertAdjacentElement("afterend", link);
+    } else {
+      nav.appendChild(link);
+    }
+  });
+})();
+
 // Highlight active nav link based on current page filename
 (function highlightNav() {
   const currentPage = window.location.pathname.split("/").pop() || "index.html";

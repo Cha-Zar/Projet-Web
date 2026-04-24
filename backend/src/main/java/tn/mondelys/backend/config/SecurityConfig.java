@@ -34,6 +34,7 @@ public class SecurityConfig {
             "/style.css",
             "/styleAdmin.css",
             "/main.js",
+            "/menuPage.js",
             "/mondelys-utils.js",
             "/publicSettings.js",
             "/admin",
@@ -43,6 +44,7 @@ public class SecurityConfig {
             "/favicon.ico",
             "/api/reservations",
             "/api/settings/public",
+            "/api/menu",
             "/api/daily-menu",
             "/api/reviews",
             "/api/reviews/public",
@@ -56,9 +58,11 @@ public class SecurityConfig {
             "/resAdmin.html",
             "/reviwAdmin.html",
             "/contactAdmin.html",
+            "/menuAdmin.html",
             "/settingsAdmin.html",
             "/adminApi.js",
-            "/navAdmin.js"
+            "/navAdmin.js",
+            "/menuAdmin.js"
     };
 
     private static final String[] DENIED_FILE_PATTERNS = {
@@ -157,8 +161,10 @@ public class SecurityConfig {
                 || path.equals("/resAdmin.html")
                 || path.equals("/reviwAdmin.html")
                 || path.equals("/contactAdmin.html")
+                || path.equals("/menuAdmin.html")
                 || path.equals("/settingsAdmin.html")
                 || path.equals("/adminApi.js")
-                || path.equals("/navAdmin.js");
+                || path.equals("/navAdmin.js")
+                || path.equals("/menuAdmin.js");
     }
 }

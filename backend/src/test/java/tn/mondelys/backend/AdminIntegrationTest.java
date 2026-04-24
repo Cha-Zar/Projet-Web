@@ -13,6 +13,7 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
+import java.util.List;
 import java.util.Map;
 
 import static org.hamcrest.Matchers.containsString;
@@ -21,6 +22,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -55,6 +57,10 @@ class AdminIntegrationTest {
 
         mockMvc.perform(get("/api/daily-menu"))
                 .andExpect(status().isNoContent());
+
+        mockMvc.perform(get("/api/menu"))
+                .andExpect(status().isOk())
+                .andExpect(content().json("[]"));
 
         mockMvc.perform(get("/api/reviews/public"))
                 .andExpect(status().isOk());
@@ -103,6 +109,9 @@ class AdminIntegrationTest {
                 .andExpect(jsonPath("$.referenceCode").value(containsString("MDY-")));
 
         mockMvc.perform(get("/api/admin/dashboard"))
+                .andExpect(status().isUnauthorized());
+
+        mockMvc.perform(get("/api/admin/menu"))
                 .andExpect(status().isUnauthorized());
 
         mockMvc.perform(get("/DashboradAdmin.html"))
@@ -240,6 +249,58 @@ class AdminIntegrationTest {
         mockMvc.perform(get("/api/admin/daily-menu").cookie(adminCookie))
                 .andExpect(status().isNoContent());
 
+        mockMvc.perform(get("/api/admin/menu").cookie(adminCookie))
+                .andExpect(status().isOk())
+                .andExpect(content().json("[]"));
+
+        JsonNode createdMenuItem = readJson(mockMvc.perform(post("/api/admin/menu")
+                        .cookie(adminCookie)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(Map.of(
+                                "name", "Japanese Gyoza (Dumplings)",
+                                "cuisine", "JAPON",
+                                "location", "Tokyo, Japon",
+                                "price", "56 TND",
+                                "pieces", "8 pieces",
+                                "description", "Ravioles grillees-vapeur, sauce ponzu maison.",
+                                "imageUrl", "images/GYOZA.jpg",
+                                "badges", List.of("Chef's Choice"),
+                                "displayOrder", 0,
+                                "active", true
+                        ))))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.name").value("Japanese Gyoza (Dumplings)"))
+                .andExpect(jsonPath("$.cuisine").value("JAPON"))
+                .andExpect(jsonPath("$.badges[0]").value("Chef's Choice"))
+                .andReturn());
+
+        long menuItemId = createdMenuItem.get("id").asLong();
+
+        mockMvc.perform(get("/api/menu"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(1)))
+                .andExpect(jsonPath("$[0].location").value("Tokyo, Japon"))
+                .andExpect(jsonPath("$[0].pieces").value("8 pieces"));
+
+        mockMvc.perform(put("/api/admin/menu/{id}", menuItemId)
+                        .cookie(adminCookie)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(Map.of(
+                                "name", "Japanese Gyoza (Dumplings)",
+                                "cuisine", "JAPON",
+                                "location", "Tokyo, Japon",
+                                "price", "58 TND",
+                                "pieces", "8 pieces",
+                                "description", "Ravioles signature, gingembre confit et sauce ponzu.",
+                                "imageUrl", "images/GYOZA.jpg",
+                                "badges", List.of("Signature", "Nouveau"),
+                                "displayOrder", 1,
+                                "active", true
+                        ))))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.price").value("58 TND"))
+                .andExpect(jsonPath("$.badges", hasSize(2)));
+
         mockMvc.perform(put("/api/admin/daily-menu")
                         .cookie(adminCookie)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -266,6 +327,15 @@ class AdminIntegrationTest {
         mockMvc.perform(get("/api/daily-menu"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.dish2Name").value("Risotto aux champignons"));
+
+        mockMvc.perform(delete("/api/admin/menu/{id}", menuItemId)
+                        .cookie(adminCookie))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.message").value("Element supprime du menu."));
+
+        mockMvc.perform(get("/api/menu"))
+                .andExpect(status().isOk())
+                .andExpect(content().json("[]"));
 
         mockMvc.perform(put("/api/admin/settings")
                         .cookie(adminCookie)
@@ -309,6 +379,14 @@ class AdminIntegrationTest {
         mockMvc.perform(get("/DashboradAdmin.html").cookie(adminCookie))
                 .andExpect(status().isOk())
                 .andExpect(content().string(containsString("Tableau de Bord")));
+
+        mockMvc.perform(get("/menuAdmin.html").cookie(adminCookie))
+                .andExpect(status().isOk())
+                .andExpect(content().string(containsString("Carte")));
+
+        mockMvc.perform(get("/menuAdmin.js").cookie(adminCookie))
+                .andExpect(status().isOk())
+                .andExpect(content().string(containsString("MENU_ADMIN_CUISINES")));
     }
 
     private String loginAndGetToken() throws Exception {

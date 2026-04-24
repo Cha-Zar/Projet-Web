@@ -45,6 +45,22 @@ CREATE TABLE IF NOT EXISTS daily_menus (
   updated_at DATETIME(6) NOT NULL
 );
 
+CREATE TABLE IF NOT EXISTS menu (
+  id BIGINT AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(180) NOT NULL,
+  cuisine VARCHAR(40) NOT NULL,
+  location VARCHAR(160),
+  price VARCHAR(160) NOT NULL,
+  pieces VARCHAR(80),
+  description VARCHAR(2000) NOT NULL,
+  badge_labels VARCHAR(600),
+  image_url VARCHAR(600) NOT NULL,
+  display_order INT NOT NULL DEFAULT 0,
+  active BIT(1) NOT NULL DEFAULT 1,
+  created_at DATETIME(6) NOT NULL,
+  updated_at DATETIME(6) NOT NULL
+);
+
 CREATE TABLE IF NOT EXISTS client_reviews (
   id BIGINT AUTO_INCREMENT PRIMARY KEY,
   created_at DATETIME(6) NOT NULL,
