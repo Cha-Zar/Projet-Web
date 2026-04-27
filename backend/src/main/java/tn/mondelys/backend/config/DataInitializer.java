@@ -15,7 +15,8 @@ public class DataInitializer implements CommandLineRunner {
     private final AppSettingsRepository appSettingsRepository;
     private final PasswordEncoder passwordEncoder;
 
-    public DataInitializer(AdminRepository adminRepository, AppSettingsRepository appSettingsRepository, PasswordEncoder passwordEncoder) {
+    public DataInitializer(AdminRepository adminRepository, AppSettingsRepository appSettingsRepository,
+            PasswordEncoder passwordEncoder) {
         this.adminRepository = adminRepository;
         this.appSettingsRepository = appSettingsRepository;
         this.passwordEncoder = passwordEncoder;
